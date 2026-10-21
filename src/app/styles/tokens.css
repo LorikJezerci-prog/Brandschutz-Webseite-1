@@ -1,0 +1,60 @@
+/* Designsystem: Farben, Typografie, Abstände */
+:root {
+  --ink-0: #06150f;
+  --ink-1: #0b1f17;
+  --ink-2: #11291f;
+  --ink-3: #173428;
+  --ink-4: #204234;
+  --stone-1: #4a5650;
+  --stone-2: #66756e;
+  --stone-3: #8ea198;
+  --stone-4: #b6c5be;
+  --stone-5: #dbe4df;
+  --paper: #eef2ef;
+  --paper-2: #ffffff;
+  --white: #ffffff;
+  --text-dark: #0f2019;
+  --text-dark-2: #44544d;
+
+  /* Hausfarbe Grün (Logo): Sicherheitslinie, Buttons, Akzente. Grün = Rettungsweg */
+  --brand: #0a6b44;
+  --line-dark: #2fb57a;
+  /* Rot nur für Gefahren und Brandschutzzeichen */
+  --danger: #b5362f;
+  --signal: #0a6b44;
+  --signal-bright: #3cc08a;
+  --signal-ink: #08573a;
+  /* Grün nur für Rettungszeichen und Status */
+  --safe: #3d8a62;
+  --safe-bright: #62b388;
+  --amber: #b9893f;
+
+  --font-sans: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --fs-hero: clamp(2.5rem, 1.4rem + 4.6vw, 5.4rem);
+  --fs-h2: clamp(2rem, 1.3rem + 2.6vw, 3.5rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.6rem);
+  --fs-lead: clamp(1.05rem, 1rem + 0.3vw, 1.25rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+  --fs-mono: 0.75rem;
+
+  --maxw: 1240px;
+  --gutter: clamp(16px, 4.5vw, 64px);
+  --header-h: 72px;
+  --radius: 2px;
+  --line-w: 3px;
+  --rail-x: max(14px, calc((100vw - var(--maxw)) / 2 - 40px));
+
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --shadow-card: 0 1px 2px rgba(20, 20, 20, 0.06), 0 12px 32px -18px rgba(20, 20, 20, 0.35);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --line-w: 2px;
+    --header-h: 60px;
+    --rail-x: 10px;
+  }
+}
