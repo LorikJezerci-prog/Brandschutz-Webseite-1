@@ -1,22 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Inter_Tight } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { StoryRuntime } from "@/components/StoryRuntime";
+import { SiteRuntime } from "@/components/SiteRuntime";
+import { ToTop } from "@/components/ToTop";
 import { site } from "@/config/site";
 import "./styles/tokens.css";
 import "./styles/base.css";
-import "./styles/story.css";
 import "./styles/sections.css";
 
 // Schriften werden beim Build lokal eingebunden; im Browser gibt es keine Verbindung zu Google.
 const sans = Inter_Tight({ subsets: ["latin", "latin-ext"], variable: "--font-inter-tight", display: "swap" });
-const mono = IBM_Plex_Mono({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -43,23 +37,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-/**
- * Wird vor dem ersten Rendern ausgeführt: Filmische Fassung nur mit
- * JavaScript und ohne Wunsch nach reduzierter Bewegung.
- */
-const storyGate = `try{if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('js-story')}}catch(e){}`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: storyGate }} />
-      </head>
+    <html lang="de" className={sans.variable} suppressHydrationWarning>
       <body>
         <Header />
         <main id="inhalt">{children}</main>
         <Footer />
-        <StoryRuntime />
+        <ToTop />
+        <SiteRuntime />
       </body>
     </html>
   );

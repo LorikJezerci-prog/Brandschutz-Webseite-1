@@ -1,18 +1,19 @@
 import { site } from "@/config/site";
 
-/** Bildmarke von Brandschutz Ried: weiße Flamme mit Pfeil nach oben auf grünem Grund */
-export function LogoMark({ size = 36 }: { size?: number }) {
+/** Bildmarke von Brandschutz Ried: weiße Flamme mit Pfeil nach oben auf grünem Grund (nach Logodatei) */
+export function LogoMark({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" focusable="false" className="logo__mark">
-      <rect width="100" height="100" rx="18" fill="var(--brand)" />
-      <path
-        fill="#fff"
-        d="M50 19.5C53 27 60 33 64 40C67 45 68.6 51 68.6 57C68.6 70 60 79.5 50 79.5C40 79.5 31.4 70 31.4 57C31.4 49 35 43 39.9 37.6C41 42 43 45 46 47C45.6 38 47 27 50 19.5Z"
-      />
-      <path fill="var(--brand)" d="M50 47L61.3 58.4H54.3V70.6H45.7V58.4H38.7Z" />
+      <rect width="100" height="100" rx="21" fill="var(--brand)" />
+      <path fill="#fff" d={FLAME} />
+      <path fill="var(--brand)" d={ARROW} />
     </svg>
   );
 }
+
+export const FLAME =
+  "M50 19.5C54.5 29 68.5 39.5 68.5 57C68.5 70.5 60 79.2 50 79.2C40 79.2 31.5 70.5 31.5 57C31.5 48 35.5 42 40.5 36.8C41.3 42 43 45.6 45.8 47.6C44.8 38 46.3 28 50 19.5Z";
+export const ARROW = "M50 47L59.8 57.8H54.4V71.2H45.6V57.8H40.2Z";
 
 export function Logo() {
   const [first, ...rest] = site.name.split(" ");

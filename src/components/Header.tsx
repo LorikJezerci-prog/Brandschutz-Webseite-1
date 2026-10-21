@@ -40,6 +40,7 @@ export function Header() {
           </nav>
         </details>
       </div>
+      <span className="progress" data-progress aria-hidden="true" />
     </header>
   );
 }

@@ -8,9 +8,6 @@ export function ContactSection({ initialError, initialFields }: { initialError?:
     <section id="kontakt" className="section section--contact" aria-labelledby="contact-title">
       <div className="wrap contact">
         <div className="contact__intro">
-          <span className="rail-end" data-draw="y" aria-hidden="true">
-            <span className="rail-end__stroke" />
-          </span>
           <p className="kicker kicker--light">Kontakt</p>
           <h2 id="contact-title" className="section-title">
             Lassen Sie uns Brandschutz strukturiert angehen.

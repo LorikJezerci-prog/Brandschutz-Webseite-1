@@ -14,7 +14,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const error = sp.fehler ? (errorText[sp.fehler] ?? errorText.failed) : undefined;
   const fields = sp.felder?.split(",").filter(Boolean);
   return (
-    <div style={{ paddingTop: "var(--header-h)" }}>
+    <div>
       <ContactSection initialError={error} initialFields={fields} />
     </div>
   );

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MotifImage } from "@/components/scenes/Motif";
+import { Illustration } from "@/components/Illustration";
 import { StatusBadge } from "@/components/StatusBadge";
 import { availability, hasAll, serviceBySlug, services } from "@/config/services";
 import { site } from "@/config/site";
@@ -40,7 +40,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
             <p className="detail-hero__lead">{s.summary}</p>
           </div>
           <div className="detail-hero__media">
-            <MotifImage motif={s.motif} id={`d-${s.slug}`} />
+            <Illustration motif={s.motif} />
           </div>
         </div>
       </section>

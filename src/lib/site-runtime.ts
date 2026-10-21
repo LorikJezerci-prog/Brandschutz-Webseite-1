@@ -1,147 +1,25 @@
 /**
- * Scroll-Engine der Startseite, ohne Abhängigkeiten.
+ * Kleine Verhaltensweisen der Seite, ohne Abhängigkeiten. Ohne JavaScript
+ * bleibt alles bedienbar; diese Funktionen ergänzen nur.
  *
- * - Schreibt die Zeitachse `--t` (0 … STORY_LENGTH) nur auf aktive Szenen.
- *   Die eigentliche Choreografie (Überblendung, Kamera, Zeichnen) steht in CSS.
- * - Steuert alle Abschnitte der Sicherheitslinie über `--draw` (scaleY/scaleX).
- * - Markiert passierte Wegpunkte.
- *
- * Läuft nur, wenn <html> die Klasse `js-story` trägt. Diese setzt ein
- * Inline-Skript im <head>, außer bei prefers-reduced-motion. Ohne JavaScript
- * zeigt die Seite eine statische Fassung aller Szenen.
+ * - Mobiles Menü schließt nach Klick und mit Escape.
+ * - Fluchtweg-Leiste unter der Kopfzeile zeigt den Lesefortschritt.
+ * - Rettungszeichen „nach oben“ erscheint nach dem ersten Bildschirm.
+ * - Countdown bis zum Abschluss der Weiterbildung.
+ * - Schnellcheck wertet bei jeder Eingabe neu aus.
  */
 
-type Draw = { el: HTMLElement; axis: "x" | "y"; top: number; size: number; span: number };
-type Node = { el: HTMLElement; top: number; passed: boolean };
-type Layer = { el: HTMLElement; start: number; end: number; active: boolean | null };
-
-const ANCHOR = 0.62;
-const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+import { evaluate, type Answers } from "./quick-check";
 
 export function initSiteRuntime(doc: Document = document): () => void {
-  const html = doc.documentElement;
-  const win = doc.defaultView ?? window;
   const cleanups: (() => void)[] = [];
-
   initNav(doc, cleanups);
-
-  if (!html.classList.contains("js-story")) {
-    return () => cleanups.forEach((c) => c());
-  }
-
-  const story = doc.querySelector<HTMLElement>("[data-story]");
-  const length = Number(story?.dataset.length ?? 0);
-  const firstChapter = story?.querySelector<HTMLElement>("[data-chapter]");
-  const layers: Layer[] = story
-    ? Array.from(story.querySelectorAll<HTMLElement>("[data-layer]")).map((el) => ({
-        el,
-        start: Number(el.dataset.start),
-        end: Number(el.dataset.end),
-        active: null,
-      }))
-    : [];
-  const followers = story ? Array.from(story.querySelectorAll<HTMLElement>("[data-follow-t]")) : [];
-  let draws: Draw[] = [];
-  let nodes: Node[] = [];
-
-  let vh = win.innerHeight;
-  let storyTop = 0;
-  let chapterH = 1;
-  let fade = 0.2;
-  let ticking = false;
-  let lastT = -1;
-
-  const absTop = (el: HTMLElement) => el.getBoundingClientRect().top + win.scrollY;
-
-  function measure() {
-    vh = win.innerHeight;
-    if (story && firstChapter) {
-      storyTop = absTop(story);
-      chapterH = firstChapter.offsetHeight || vh;
-      fade = parseFloat(win.getComputedStyle(story).getPropertyValue("--fade")) || 0.2;
-    }
-    draws = Array.from(doc.querySelectorAll<HTMLElement>("[data-draw]")).map((el) => ({
-      el,
-      axis: el.dataset.draw === "x" ? "x" : "y",
-      top: absTop(el),
-      size: el.dataset.draw === "x" ? 0 : el.offsetHeight,
-      span: Number(el.dataset.span ?? 0.18),
-    }));
-    nodes = Array.from(doc.querySelectorAll<HTMLElement>("[data-node]")).map((el) => ({
-      el,
-      top: absTop(el),
-      passed: el.classList.contains("is-passed"),
-    }));
-    lastT = -1;
-    update();
-  }
-
-  function update() {
-    ticking = false;
-    const y = win.scrollY;
-    const tip = y + vh * ANCHOR;
-
-    if (story) {
-      const t = clamp((y - storyTop) / chapterH, 0, length);
-      if (Math.abs(t - lastT) > 0.0005) {
-        lastT = t;
-        const ts = t.toFixed(4);
-        for (const l of layers) {
-          const active = t >= l.start - fade - 0.06 && t <= l.end + 0.06;
-          if (active !== l.active) {
-            l.active = active;
-            l.el.classList.toggle("is-idle", !active);
-          }
-          if (active) l.el.style.setProperty("--t", ts);
-        }
-        for (const f of followers) f.style.setProperty("--t", ts);
-      }
-    }
-
-    for (const d of draws) {
-      const v = d.axis === "y" ? clamp((tip - d.top) / Math.max(1, d.size)) : clamp((tip - d.top) / (vh * d.span));
-      d.el.style.setProperty("--draw", v.toFixed(4));
-    }
-    for (const n of nodes) {
-      const passed = tip >= n.top;
-      if (passed !== n.passed) {
-        n.passed = passed;
-        n.el.classList.toggle("is-passed", passed);
-      }
-    }
-  }
-
-  const onScroll = () => {
-    if (!ticking) {
-      ticking = true;
-      win.requestAnimationFrame(update);
-    }
-  };
-
-  let resizeTimer = 0;
-  const onResize = () => {
-    win.clearTimeout(resizeTimer);
-    resizeTimer = win.setTimeout(measure, 120);
-  };
-
-  win.addEventListener("scroll", onScroll, { passive: true });
-  win.addEventListener("resize", onResize);
-  const ro = "ResizeObserver" in win ? new ResizeObserver(onResize) : null;
-  ro?.observe(doc.body);
-  doc.fonts?.ready.then(measure).catch(() => undefined);
-  measure();
-  html.classList.add("story-ready");
-
-  cleanups.push(() => {
-    win.removeEventListener("scroll", onScroll);
-    win.removeEventListener("resize", onResize);
-    ro?.disconnect();
-    html.classList.remove("story-ready");
-  });
+  initScroll(doc, cleanups);
+  initCountdown(doc);
+  initQuickCheck(doc, cleanups);
   return () => cleanups.forEach((c) => c());
 }
 
-/** Mobiles Menü: <details> funktioniert ohne JS, hier nur Komfort (schließen bei Klick/Escape). */
 function initNav(doc: Document, cleanups: (() => void)[]) {
   const menu = doc.querySelector<HTMLDetailsElement>("[data-menu]");
   if (!menu) return;
@@ -159,5 +37,81 @@ function initNav(doc: Document, cleanups: (() => void)[]) {
   cleanups.push(() => {
     menu.removeEventListener("click", onClick);
     doc.removeEventListener("keydown", onKey);
+  });
+}
+
+function initScroll(doc: Document, cleanups: (() => void)[]) {
+  const win = doc.defaultView ?? window;
+  const bar = doc.querySelector<HTMLElement>("[data-progress]");
+  const top = doc.querySelector<HTMLElement>("[data-totop]");
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const max = doc.documentElement.scrollHeight - win.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, win.scrollY / max)) : 0;
+    bar?.style.setProperty("--p", p.toFixed(4));
+    top?.classList.toggle("is-visible", win.scrollY > win.innerHeight * 0.9);
+  };
+  const onScroll = () => {
+    if (!frame) frame = win.requestAnimationFrame(update);
+  };
+  update();
+  win.addEventListener("scroll", onScroll, { passive: true });
+  win.addEventListener("resize", onScroll);
+  cleanups.push(() => {
+    win.removeEventListener("scroll", onScroll);
+    win.removeEventListener("resize", onScroll);
+    if (frame) win.cancelAnimationFrame(frame);
+  });
+}
+
+function initCountdown(doc: Document) {
+  doc.querySelectorAll<HTMLElement>("[data-countdown]").forEach((el) => {
+    const target = new Date(`${el.dataset.countdown}T00:00:00`);
+    const days = Math.ceil((target.getTime() - Date.now()) / 86_400_000);
+    if (Number.isNaN(days)) return;
+    el.textContent = days > 1 ? `noch ${days} Tage` : days === 1 ? "noch 1 Tag" : "abgeschlossen";
+  });
+}
+
+function initQuickCheck(doc: Document, cleanups: (() => void)[]) {
+  const root = doc.querySelector<HTMLElement>("[data-quickcheck]");
+  const form = root?.querySelector("form");
+  const list = root?.querySelector<HTMLElement>("[data-hints]");
+  if (!form || !list) return;
+  const render = () => {
+    const f = form.elements as HTMLFormControlsCollection & Record<string, HTMLInputElement>;
+    const a: Answers = {
+      staff: f.staff.value,
+      floors: f.floors.checked,
+      visitors: f.visitors.checked,
+      hazard: f.hazard.checked,
+      bso: f.bso.checked,
+      briefed: f.briefed.checked,
+    };
+    list.replaceChildren(
+      ...evaluate(a).map((h) => {
+        const li = doc.createElement("li");
+        li.className = `hint hint--${h.tone}`;
+        const t = doc.createElement("p");
+        t.className = "hint__title";
+        t.textContent = h.title;
+        const d = doc.createElement("p");
+        d.className = "hint__text";
+        d.textContent = h.text;
+        li.append(t, d);
+        return li;
+      }),
+    );
+  };
+  const onSubmit = (e: Event) => e.preventDefault();
+  form.addEventListener("input", render);
+  form.addEventListener("change", render);
+  form.addEventListener("submit", onSubmit);
+  render();
+  cleanups.push(() => {
+    form.removeEventListener("input", render);
+    form.removeEventListener("change", render);
+    form.removeEventListener("submit", onSubmit);
   });
 }

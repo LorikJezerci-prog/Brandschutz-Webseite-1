@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <section className="section section--paper" style={{ paddingTop: "calc(var(--header-h) + 4rem)" }} aria-label="Leistungen">
+    <section className="section section--tint section--first" aria-label="Leistungen">
       <div className="wrap">
-        <ServicesIntro />
+        <ServicesIntro as="h1" />
         <ServiceCards idPrefix="lst" />
       </div>
     </section>

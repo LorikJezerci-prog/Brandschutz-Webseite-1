@@ -1,6 +1,6 @@
 import { capabilities, type Capability } from "./site";
 
-export type Motif = "facade" | "blueprint" | "plan" | "door" | "system" | "corridor";
+export type Motif = "beratung" | "bsb" | "ordnung" | "unterweisung" | "tuer" | "bma";
 
 export type Availability = "verfuegbar" | "nach-weiterbildung" | "perspektivisch";
 
@@ -16,8 +16,6 @@ export interface Service {
   title: string;
   short: string;
   motif: Motif;
-  /** Layout in der Leistungsübersicht */
-  size: "wide" | "narrow" | "compact";
   horizon: "kern" | "perspektivisch";
   requires: Capability[];
   summary: string;
@@ -34,8 +32,7 @@ export const services: Service[] = [
     letter: "A",
     title: "Brandschutzberatung",
     short: "Organisatorische Brandschutzfragen strukturiert klären und in machbare Schritte übersetzen.",
-    motif: "facade",
-    size: "narrow",
+    motif: "beratung",
     horizon: "kern",
     requires: ["bsb"],
     summary:
@@ -57,8 +54,7 @@ export const services: Service[] = [
     letter: "B",
     title: "Externer Brandschutzbeauftragter",
     short: "Kontinuierliche Betreuung mit Begehungen, Dokumentation und einem festen Ansprechpartner.",
-    motif: "blueprint",
-    size: "wide",
+    motif: "bsb",
     horizon: "kern",
     requires: ["bsb"],
     summary:
@@ -83,8 +79,7 @@ export const services: Service[] = [
     letter: "C",
     title: "Brandschutzordnung und Flucht- und Rettungspläne",
     short: "Klare Abläufe, verständliche Aushänge und Pläne, die zum Gebäude passen.",
-    motif: "plan",
-    size: "wide",
+    motif: "ordnung",
     horizon: "kern",
     requires: ["bsb"],
     summary:
@@ -116,8 +111,7 @@ export const services: Service[] = [
     letter: "D",
     title: "Brandschutzunterweisungen",
     short: "Verständliche, praxisnahe Unterweisungen, die Beschäftigte wirklich erreichen.",
-    motif: "corridor",
-    size: "narrow",
+    motif: "unterweisung",
     horizon: "kern",
     requires: ["bsb"],
     summary:
@@ -139,8 +133,7 @@ export const services: Service[] = [
     letter: "E",
     title: "Brandschutztüren und Feststellanlagen",
     short: "Erfassen, Fristen im Blick behalten, Prüfungen mit Fachbetrieben organisieren.",
-    motif: "door",
-    size: "compact",
+    motif: "tuer",
     horizon: "perspektivisch",
     requires: ["fsa"],
     summary:
@@ -162,8 +155,7 @@ export const services: Service[] = [
     letter: "F",
     title: "Brandmeldeanlagen",
     short: "Schnittstellen verstehen, Betreiberpflichten organisieren, mit Fachfirmen zusammenarbeiten.",
-    motif: "system",
-    size: "compact",
+    motif: "bma",
     horizon: "perspektivisch",
     requires: ["bma"],
     summary:

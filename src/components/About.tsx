@@ -8,12 +8,12 @@ const stateLabel = {
 
 export function About() {
   return (
-    <section id="hintergrund" className="section section--light" aria-labelledby="about-title">
+    <section id="hintergrund" className="section" aria-labelledby="about-title">
       <div className="wrap about">
         <div className="about__text">
           <p className="kicker">Hintergrund</p>
           <h2 id="about-title" className="section-title">
-            Aus dem Betrieb, nicht vom Reißbrett.
+            Aus dem Betrieb, für den Betrieb.
           </h2>
           <p>
             Hinter {site.name} steht <Val v={site.founder.name} />. Der berufliche Alltag als Chemikant im

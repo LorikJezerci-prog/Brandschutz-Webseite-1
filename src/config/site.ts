@@ -42,7 +42,7 @@ export const site = {
     "Organisatorischer Brandschutz für Unternehmen im Hessischen Ried und an der Bergstraße: Beratung, Brandschutzordnung, Unterweisungen und perspektivisch die Betreuung als externer Brandschutzbeauftragter.",
   region: {
     label: "Hessisches Ried · Bergstraße",
-    areas: ["Hessisches Ried", "Kreis Bergstraße", "Südhessen"],
+    areas: ["Lampertheim", "Hessisches Ried", "Kreis Bergstraße"],
     later: ["Rhein-Neckar"],
   },
 
@@ -100,6 +100,8 @@ export const site = {
       detail: "Lehrgang nach DGUV Information 205-003, 64 Unterrichtseinheiten mit Projektarbeit, Objektbegehung, Löschübung und Prüfung",
       state: capabilities.bsb ? "vorhanden" : "in-weiterbildung",
       expected: "Abschluss geplant im Dezember 2026",
+      /** Datum der Abschlussprüfung, für den Countdown auf der Startseite */
+      date: "2026-12-03",
     },
   ] as const,
 
@@ -115,8 +117,9 @@ export const site = {
 } as const;
 
 export const nav = [
+  { href: "/#angebot", label: "Angebot" },
   { href: "/#leistungen", label: "Leistungen" },
-  { href: "/#arbeitsweise", label: "Arbeitsweise" },
+  { href: "/#schnellcheck", label: "Schnellcheck" },
   { href: "/#hintergrund", label: "Hintergrund" },
   { href: "/#kontakt", label: "Kontakt" },
 ] as const;

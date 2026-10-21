@@ -182,7 +182,6 @@ export function ContactForm({ initialError, initialFields = [] }: Props) {
         <button className="btn btn--primary btn--large" type="submit" disabled={state.kind === "sending"}>
           {state.kind === "sending" ? "Wird gesendet …" : "Unverbindliche Anfrage stellen"}
         </button>
-        <span className="form__end-node" data-node aria-hidden="true" />
       </div>
     </form>
   );
