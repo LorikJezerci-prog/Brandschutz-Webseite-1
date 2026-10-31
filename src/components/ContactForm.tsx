@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { availability, services } from "@/config/services";
+import { services } from "@/config/services";
 import { OTHER_SERVICE, type FieldErrors } from "@/lib/contact/validate";
 
 type State =
@@ -13,7 +13,7 @@ type State =
 const options = [
   ...services.map((s) => ({
     value: s.slug,
-    label: availability(s) === "verfuegbar" ? s.title : `${s.title} (in Vorbereitung)`,
+    label: s.group === "partner" ? `${s.title} (über Fachpartner)` : s.title,
   })),
   { value: OTHER_SERVICE, label: "Sonstiges oder noch offen" },
 ];

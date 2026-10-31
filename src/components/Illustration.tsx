@@ -179,24 +179,72 @@ const scenes: Record<Motif | "hero", ReactNode> = {
     </g>
   ),
 
-  /** Brandmeldeanlage: Rauchmelder an der Decke, Handmelder an der Wand */
-  bma: (
+  /** Feuerlöscher: Löschübung bzw. Bedarfsberechnung mit Grundriss */
+  loescher: (
     <g>
-      <rect x="0" y="0" width="480" height="40" fill={G.bg2} />
-      <path d="M210 40 H270 V50 C270 58 210 58 210 50 Z" fill={G.white} />
-      <circle cx="240" cy="54" r="5" fill={G.red} />
-      {[0, 1, 2].map((i) => (
-        <path key={i} d={`M${206 - i * 18} ${72 + i * 16} Q240 ${92 + i * 22} ${274 + i * 18} ${72 + i * 16}`} stroke={G.mid} strokeWidth="4" fill="none" strokeLinecap="round" opacity={1 - i * 0.25} />
+      <rect x="0" y="262" width="480" height="58" fill={G.bg2} />
+      <rect x="250" y="50" width="190" height="150" rx="6" fill={G.white} />
+      <g fill="none" stroke={G.dark} strokeWidth="3">
+        <rect x="268" y="68" width="154" height="114" />
+        <path d="M345 68 V182 M268 125 H345" />
+      </g>
+      {[[300, 96], [380, 110], [300, 156], [395, 160]].map(([cx, cy]) => (
+        <g key={`${cx}-${cy}`}>
+          <rect x={cx - 9} y={cy - 9} width="18" height="18" rx="3" fill={G.red} />
+          <rect x={cx - 3} y={cy - 5} width="6" height="10" rx="2" fill={G.white} />
+        </g>
       ))}
-      <rect x="320" y="150" width="70" height="80" rx="6" fill={G.red} />
-      <rect x="332" y="162" width="46" height="46" rx="3" fill={G.white} />
-      <path d="M346 196 L355 176 L364 196" stroke={G.red} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="70" y="140" width="120" height="110" rx="6" fill={G.white} />
-      <rect x="84" y="156" width="92" height="30" rx="3" fill={G.dark} />
-      <circle cx="98" cy="208" r="7" fill={G.brand} />
-      <circle cx="122" cy="208" r="7" fill={G.soft} />
-      <circle cx="146" cy="208" r="7" fill={G.soft} />
-      <rect x="84" y="226" width="92" height="8" rx="4" fill={G.grey} />
+      <Extinguisher x={70} y={150} s={1.4} />
+      <Extinguisher x={130} y={170} s={1.15} />
+      <Extinguisher x={182} y={184} s={0.95} />
+    </g>
+  ),
+
+  /** Räumung: Personen folgen dem Fluchtweg zur Sammelstelle */
+  raeumung: (
+    <g>
+      <rect x="0" y="250" width="480" height="70" fill={G.bg2} />
+      <rect x="30" y="80" width="150" height="170" fill={G.white} />
+      <rect x="85" y="190" width="40" height="60" fill={G.brand} />
+      <ExitSign x={73} y={152} s={0.8} />
+      <path d="M130 276 H400" stroke={G.brand} strokeWidth="6" strokeLinecap="round" strokeDasharray="1 16" />
+      <Person x={170} y={196} s={0.95} tone={G.mid} />
+      <Person x={226} y={190} s={1.05} />
+      <Person x={284} y={196} s={0.95} tone={G.mid} />
+      <rect x="360" y="120" width="86" height="70" rx="5" fill={G.brand} />
+      <rect x="374" y="132" width="58" height="46" rx="2" fill="none" stroke={G.white} strokeWidth="3" />
+      {[[390, 146], [416, 146], [403, 164]].map(([cx, cy]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5" fill={G.white} />
+      ))}
+      <rect x="400" y="190" width="6" height="66" fill={G.dark} />
+    </g>
+  ),
+
+  /** Heißarbeiten: Werkbank mit Schweißfunken, Erlaubnisschein, Feuerlöscher bereit */
+  heiss: (
+    <g>
+      <rect x="0" y="262" width="480" height="58" fill={G.bg2} />
+      <rect x="60" y="180" width="220" height="16" rx="3" fill={G.dark} />
+      <rect x="76" y="196" width="12" height="66" fill={G.dark} />
+      <rect x="252" y="196" width="12" height="66" fill={G.dark} />
+      <rect x="120" y="160" width="110" height="20" rx="2" fill={G.grey} />
+      {[[-40, -30], [-20, -46], [6, -50], [30, -40], [44, -20], [-46, -8]].map(([dx, dy]) => (
+        <path key={`${dx}${dy}`} d={`M175 158 l${dx} ${dy}`} stroke="#f2b84b" strokeWidth="4" strokeLinecap="round" />
+      ))}
+      <circle cx="175" cy="158" r="8" fill="#f2b84b" />
+      <Extinguisher x={300} y={186} s={0.95} />
+      <g transform="rotate(5 400 150)">
+        <rect x="350" y="70" width="96" height="124" rx="4" fill={G.white} />
+        <rect x="350" y="70" width="96" height="22" rx="4" fill={G.brand} />
+        <rect x="350" y="84" width="96" height="8" fill={G.brand} />
+        <Check x={362} y={104} s={0.6} />
+        <rect x="382" y="108" width="50" height="6" rx="3" fill={G.grey} />
+        <Check x={362} y={128} s={0.6} />
+        <rect x="382" y="132" width="44" height="6" rx="3" fill={G.grey} />
+        <Check x={362} y={152} s={0.6} />
+        <rect x="382" y="156" width="50" height="6" rx="3" fill={G.grey} />
+        <path d="M364 182 C376 172 386 186 398 176 S420 180 430 174" stroke={G.dark} strokeWidth="2.5" fill="none" />
+      </g>
     </g>
   ),
 

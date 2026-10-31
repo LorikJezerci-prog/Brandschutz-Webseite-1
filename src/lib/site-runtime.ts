@@ -5,7 +5,6 @@
  * - Mobiles Menü schließt nach Klick und mit Escape.
  * - Fluchtweg-Leiste unter der Kopfzeile zeigt den Lesefortschritt.
  * - Rettungszeichen „nach oben“ erscheint nach dem ersten Bildschirm.
- * - Countdown bis zum Abschluss der Weiterbildung.
  * - Schnellcheck wertet bei jeder Eingabe neu aus.
  */
 
@@ -15,7 +14,6 @@ export function initSiteRuntime(doc: Document = document): () => void {
   const cleanups: (() => void)[] = [];
   initNav(doc, cleanups);
   initScroll(doc, cleanups);
-  initCountdown(doc);
   initQuickCheck(doc, cleanups);
   return () => cleanups.forEach((c) => c());
 }
@@ -65,14 +63,6 @@ function initScroll(doc: Document, cleanups: (() => void)[]) {
   });
 }
 
-function initCountdown(doc: Document) {
-  doc.querySelectorAll<HTMLElement>("[data-countdown]").forEach((el) => {
-    const target = new Date(`${el.dataset.countdown}T00:00:00`);
-    const days = Math.ceil((target.getTime() - Date.now()) / 86_400_000);
-    if (Number.isNaN(days)) return;
-    el.textContent = days > 1 ? `noch ${days} Tage` : days === 1 ? "noch 1 Tag" : "abgeschlossen";
-  });
-}
 
 function initQuickCheck(doc: Document, cleanups: (() => void)[]) {
   const root = doc.querySelector<HTMLElement>("[data-quickcheck]");

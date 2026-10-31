@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Illustration } from "@/components/Illustration";
-import { StatusBadge } from "@/components/StatusBadge";
-import { availability, hasAll, serviceBySlug, services } from "@/config/services";
+import { groups, serviceBySlug, services } from "@/config/services";
 import { site } from "@/config/site";
 
 type Params = { slug: string };
@@ -24,8 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function ServicePage({ params }: { params: Promise<Params> }) {
   const s = serviceBySlug((await params).slug);
   if (!s) notFound();
-  const status = availability(s);
-  const others = services.filter((o) => o.slug !== s.slug).slice(0, 3);
+  const partner = s.group === "partner";
+  const others = services.filter((o) => o.group === s.group && o.slug !== s.slug).slice(0, 4);
 
   return (
     <>
@@ -33,9 +32,14 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         <div className="wrap detail-hero__grid">
           <div>
             <p className="crumbs">
-              <a href="/">Start</a> / <a href="/leistungen">Leistungen</a> / {s.letter}
+              <a href="/">Start</a> / <a href="/leistungen">Leistungen</a> / {groups[s.group].title}
             </p>
-            <StatusBadge status={status} />
+            {partner && (
+              <span className="badge badge--partner">
+                <span className="badge__dot" aria-hidden="true" />
+                Über Fachpartner
+              </span>
+            )}
             <h1 id="detail-title">{s.title}</h1>
             <p className="detail-hero__lead">{s.summary}</p>
           </div>
@@ -53,69 +57,50 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
               <p>{s.why}</p>
             </section>
             <section aria-labelledby="tasks">
-              <h2 id="tasks">Mögliche Aufgaben</h2>
+              <h2 id="tasks">{partner ? "Was ich übernehme" : "Was dazugehört"}</h2>
               <ul className="ticks">
                 {s.tasks.map((t) => (
                   <li key={t}>{t}</li>
                 ))}
               </ul>
             </section>
-            {s.scope && (
-              <section aria-labelledby="scope">
-                <h2 id="scope">Leistungsumfang im Überblick</h2>
-                <table className="scope">
-                  <thead>
-                    <tr>
-                      <th scope="col">Gegenstand</th>
-                      <th scope="col">Tätigkeit</th>
-                      <th scope="col">Stand</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {s.scope.map((r) => (
-                      <tr key={r.item + r.mode}>
-                        <td>{r.item}</td>
-                        <td>{r.mode}</td>
-                        <td>{hasAll(r.requires) ? "Anfrage möglich" : r.requires.includes("frp") ? "In Vorbereitung" : "Nach Abschluss der Weiterbildung"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </section>
-            )}
             <section aria-labelledby="benefit">
               <h2 id="benefit">Ihr Nutzen</h2>
               <p>{s.benefit}</p>
             </section>
-            <section aria-labelledby="bounds">
-              <h2 id="bounds">Abgrenzung</h2>
-              <div className="boundary">
-                {s.boundaries.map((b) => (
-                  <p key={b}>{b}</p>
-                ))}
-              </div>
-            </section>
+            <p className="basis">
+              <span>Grundlage</span>
+              {s.basis}
+            </p>
+            {s.boundaries.length > 0 && (
+              <section aria-labelledby="bounds">
+                <h2 id="bounds">Abgrenzung</h2>
+                <div className="boundary">
+                  {s.boundaries.map((b) => (
+                    <p key={b}>{b}</p>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           <aside className="aside-cta" aria-label="Anfrage">
-            <h2>{status === "verfuegbar" ? "Anfrage stellen" : "Interesse vormerken"}</h2>
-            <p>
-              {status === "verfuegbar"
-                ? "Beschreiben Sie kurz Ihr Objekt und Ihr Anliegen. Sie erhalten eine Rückmeldung mit dem möglichen Vorgehen."
-                : "Diese Leistung ist noch nicht freigeschaltet. Sie können trotzdem Kontakt aufnehmen; ein Angebot gibt es erst, wenn die Voraussetzungen nachgewiesen sind."}
-            </p>
+            <h2>Anfrage stellen</h2>
+            <p>Beschreiben Sie kurz Ihren Betrieb und Ihr Anliegen. Sie erhalten eine Rückmeldung mit dem möglichen Vorgehen.</p>
             <a className="btn btn--primary" href={`/kontakt?leistung=${s.slug}#formular`}>
-              Unverbindliche Anfrage stellen
+              Unverbindlich anfragen
             </a>
-            <p>
-              Weitere Leistungen:{" "}
-              {others.map((o, i) => (
-                <span key={o.slug}>
-                  {i > 0 && ", "}
-                  <a href={`/leistungen/${o.slug}`}>{o.title}</a>
-                </span>
-              ))}
-            </p>
+            {others.length > 0 && (
+              <p>
+                Passt dazu:{" "}
+                {others.map((o, i) => (
+                  <span key={o.slug}>
+                    {i > 0 && ", "}
+                    <a href={`/leistungen/${o.slug}`}>{o.title}</a>
+                  </span>
+                ))}
+              </p>
+            )}
           </aside>
         </div>
       </div>

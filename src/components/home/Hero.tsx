@@ -16,8 +16,8 @@ export function Hero() {
             Brandschutz beginnt, bevor etwas passiert.
           </h1>
           <p className="hero__lead">
-            Organisatorischer Brandschutz für Betriebe in Lampertheim und Umgebung: verständlich, praxisnah und mit
-            klaren Grenzen, was ich übernehme und was nicht.
+            Externer Brandschutzbeauftragter, Begehungen, Brandschutzordnung und Schulungen für Betriebe in
+            Lampertheim und Umgebung. Verständlich, praxisnah und vor Ort.
           </p>
           <div className="hero__actions">
             <a className="btn btn--white" href="#kontakt">
@@ -28,9 +28,8 @@ export function Hero() {
             </a>
           </div>
           <ul className="hero__facts" aria-label="Hintergrund">
-            <li>Chemikant</li>
             <li>Werkfeuerwehr</li>
-            <li>Brandschutzbeauftragter nach DGUV 205-003, Abschluss 12/2026</li>
+            <li>Brandschutzbeauftragter nach DGUV 205-003</li>
           </ul>
         </div>
         <div className="hero__media">

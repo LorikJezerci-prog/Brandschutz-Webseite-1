@@ -11,7 +11,6 @@ export function Footer() {
             <LogoMark size={22} /> {site.name}
           </p>
           <p className="site-footer__note">{site.region.areas.join(" · ")}</p>
-          {!site.status.founded && <p className="site-footer__status">{site.status.note}</p>}
         </div>
         <nav aria-label="Fußnavigation">
           <ul className="site-footer__links">

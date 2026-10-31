@@ -16,22 +16,17 @@ export const isPlaceholder = (v: unknown): v is Placeholder =>
 export const text = (v: Value) => (isPlaceholder(v) ? `[Platzhalter: ${v.placeholder}]` : v);
 
 /**
- * Freischaltung von Leistungen. Ein Schalter wird erst auf `true` gesetzt,
- * wenn die Voraussetzung tatsächlich nachgewiesen ist (Zeugnis, Zertifikat,
- * Vertrag mit Fachpartner).
+ * Frühester Tag, an dem die Seite öffentlich gehen darf: Tag der Abschlussprüfung
+ * zum Brandschutzbeauftragten. Die Seite beschreibt den Stand nach bestandenem
+ * Lehrgang; vorher wäre das irreführende Werbung (§ 5 UWG).
+ * `npm run check:launch` schlägt fehl, solange dieses Datum nicht erreicht ist
+ * oder `courseCertificate` nicht auf true steht.
  */
-export const capabilities = {
-  /** Lehrgang Brandschutzbeauftragter nach DGUV Information 205-003 bestanden */
-  bsb: false,
-  /** Software, Vorlagen und Routine für die Erstellung von Flucht- und Rettungsplänen */
-  frp: false,
-  /** Sachkunde für Feststellanlagen (z. B. Herstellerschulung) oder Vertrag mit Fachbetrieb */
-  fsa: false,
-  /** Kooperation mit einer nach DIN 14675 zertifizierten Fachfirma für Brandmeldeanlagen */
-  bma: false,
+export const launch = {
+  notBefore: "2026-12-03",
+  /** Erst auf true setzen, wenn das Zeugnis tatsächlich vorliegt */
+  courseCertificate: false,
 } as const;
-
-export type Capability = keyof typeof capabilities;
 
 export const site = {
   name: "Brandschutz Ried",
@@ -52,32 +47,28 @@ export const site = {
    */
   indexable: false,
 
-  /** Aktueller Unternehmensstatus, wird im Footer und im Abschnitt „Hintergrund“ gezeigt */
-  status: {
-    founded: false,
-    note: "Brandschutz Ried befindet sich im Aufbau. Leistungen werden schrittweise freigeschaltet, sobald die jeweiligen Voraussetzungen nachgewiesen sind.",
-  },
 
   founder: {
-    name: ph("Vor- und Nachname des Inhabers"),
+    name: "Lorik Jezerci" as Value,
     role: "Inhaber",
   },
 
   contact: {
     email: ph("Geschäftliche E-Mail-Adresse") as Value,
-    phone: ph("Telefonnummer") as Value,
-    street: ph("Straße und Hausnummer") as Value,
-    zip: ph("PLZ") as Value,
+    phone: "0176 62974724" as Value,
+    street: "Friedrichstraße 42" as Value,
+    zip: "68623" as Value,
     city: "Lampertheim" as Value,
   },
 
   legal: {
-    owner: ph("Vor- und Nachname (Inhaber)") as Value,
-    legalForm: ph("Rechtsform, z. B. Einzelunternehmen") as Value,
-    vatId: ph("USt-IdNr. oder Hinweis auf Kleinunternehmerregelung") as Value,
-    responsibleForContent: ph("Name und Anschrift nach § 18 Abs. 2 MStV") as Value,
+    owner: "Lorik Jezerci" as Value,
+    vatId: ph("USt-IdNr. oder Wirtschafts-IdNr.; bei Kleinunternehmer ohne Nummer: Zeile entfernen") as Value,
     hostingProvider: ph("Hosting-Anbieter mit Anschrift") as Value,
     mailProvider: ph("E-Mail-Anbieter für das Kontaktformular") as Value,
+    /** § 2 Abs. 1 Nr. 11 DL-InfoV */
+    insurer: ph("Berufshaftpflicht: Versicherer mit Anschrift") as Value,
+    insuranceScope: ph("Räumlicher Geltungsbereich, z. B. Deutschland") as Value,
   },
 
   /**
@@ -86,22 +77,14 @@ export const site = {
    */
   qualifications: [
     {
-      label: "Chemikant",
-      detail: "Berufsausbildung, tätig im chemischen Produktionsumfeld",
-      state: "vorhanden",
-    },
-    {
       label: "Werkfeuerwehr",
-      detail: "Aktive Tätigkeit in einer Werkfeuerwehr",
+      detail: "Oberfeuerwehrmann in einer Werkfeuerwehr",
       state: "vorhanden",
     },
     {
       label: "Brandschutzbeauftragter",
-      detail: "Lehrgang nach DGUV Information 205-003, 64 Unterrichtseinheiten mit Projektarbeit, Objektbegehung, Löschübung und Prüfung",
-      state: capabilities.bsb ? "vorhanden" : "in-weiterbildung",
-      expected: "Abschluss geplant im Dezember 2026",
-      /** Datum der Abschlussprüfung, für den Countdown auf der Startseite */
-      date: "2026-12-03",
+      detail: "Ausbildung nach DGUV Information 205-003, 64 Unterrichtseinheiten mit Projektarbeit, Objektbegehung, Löschübung und Prüfung",
+      state: "vorhanden",
     },
   ] as const,
 
@@ -117,8 +100,8 @@ export const site = {
 } as const;
 
 export const nav = [
-  { href: "/#angebot", label: "Angebot" },
   { href: "/#leistungen", label: "Leistungen" },
+  { href: "/#branchen", label: "Branchen" },
   { href: "/#schnellcheck", label: "Schnellcheck" },
   { href: "/#hintergrund", label: "Hintergrund" },
   { href: "/#kontakt", label: "Kontakt" },

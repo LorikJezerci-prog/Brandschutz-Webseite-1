@@ -16,23 +16,15 @@ export default function ImprintPage() {
       </section>
       <div className="legal">
         <div className="wrap">
-          <p className="notice">
-            Vorbereitete Seite. Alle markierten Angaben sind Platzhalter und müssen vor der Veröffentlichung durch die
-            tatsächlichen Daten ersetzt werden. Die Seite ersetzt keine Rechtsberatung.
-          </p>
-
           <h2>Angaben gemäß § 5 DDG</h2>
           <p>
-            {site.name}
+            <Val v={legal.owner} />
             <br />
-            Inhaber: <Val v={legal.owner} />
+            {site.name}
             <br />
             <Val v={contact.street} />
             <br />
             <Val v={contact.zip} /> <Val v={contact.city} />
-          </p>
-          <p>
-            Rechtsform: <Val v={legal.legalForm} />
           </p>
 
           <h2>Kontakt</h2>
@@ -44,12 +36,16 @@ export default function ImprintPage() {
 
           <h2>Umsatzsteuer</h2>
           <p>
-            <Val v={legal.vatId} />
+            Umsatzsteuer-Identifikationsnummer bzw. Wirtschafts-Identifikationsnummer: <Val v={legal.vatId} />
           </p>
 
-          <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+          <h2>Berufshaftpflichtversicherung</h2>
           <p>
-            <Val v={legal.responsibleForContent} />
+            Angaben nach § 2 Abs. 1 Nr. 11 DL-InfoV:
+            <br />
+            <Val v={legal.insurer} />
+            <br />
+            Räumlicher Geltungsbereich: <Val v={legal.insuranceScope} />
           </p>
 
           <h2>Verbraucherstreitbeilegung</h2>
@@ -61,9 +57,13 @@ export default function ImprintPage() {
           <h2>Haftung für Inhalte und Links</h2>
           <p>
             Die Inhalte dieser Website wurden mit Sorgfalt erstellt. Sie dienen der allgemeinen Information und ersetzen
-            keine Beratung im Einzelfall. Für Inhalte externer Websites, auf die verwiesen wird, sind ausschließlich
-            deren Betreiber verantwortlich.
+            keine Beratung im Einzelfall. Das gilt auch für den Schnellcheck: Er gibt eine erste Orientierung und
+            ersetzt nicht die Gefährdungsbeurteilung. Für Inhalte externer Websites, auf die verwiesen wird, sind
+            ausschließlich deren Betreiber verantwortlich.
           </p>
+
+          <h2>Bildnachweis</h2>
+          <p>Alle Grafiken auf dieser Website sind eigene Darstellungen von {site.name}.</p>
         </div>
       </div>
     </>

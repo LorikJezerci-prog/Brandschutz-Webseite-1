@@ -8,7 +8,7 @@ const valid = {
   company: "Muster Logistik GmbH",
   email: "Erika@Example.de",
   phone: "+49 6206 123456",
-  service: "brandschutzordnung-flucht-und-rettungsplaene",
+  service: "brandschutzordnung",
   location: "Lampertheim",
   message: "Wir benötigen eine aktuelle Brandschutzordnung für unser Lager.",
   privacy: "on",

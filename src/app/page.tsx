@@ -1,24 +1,26 @@
 import { About } from "@/components/About";
 import { ContactSection } from "@/components/ContactSection";
+import { Branchen } from "@/components/home/Branchen";
 import { Hero } from "@/components/home/Hero";
 import { QuickCheck } from "@/components/home/QuickCheck";
 import { Scope } from "@/components/home/Scope";
 import { Steps } from "@/components/home/Steps";
-import { ServiceCards, ServicesIntro } from "@/components/ServiceCards";
+import { ServiceGroups, ServicesIntro } from "@/components/ServiceCards";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <Scope />
-      <section id="leistungen" className="section section--tint" aria-label="Leistungen">
+      <section id="leistungen" className="section" aria-label="Leistungen">
         <div className="wrap">
           <ServicesIntro />
-          <ServiceCards />
+          <ServiceGroups />
         </div>
       </section>
+      <Branchen />
       <QuickCheck />
       <Steps />
+      <Scope />
       <About />
       <ContactSection />
     </>
