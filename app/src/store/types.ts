@@ -1,0 +1,84 @@
+export type Customer = {
+  id: string;
+  name: string;
+  branche: string;
+  contact: string;
+  phone: string;
+  email: string;
+  address: string;
+  notes: string;
+  createdAt: string;
+};
+
+export type Status = 'ok' | 'mangel' | 'na';
+export type Priority = 'sofort' | 'kurzfristig' | 'mittelfristig';
+
+export const priorityLabel: Record<Priority, string> = {
+  sofort: 'Sofort',
+  kurzfristig: 'Bis 4 Wochen',
+  mittelfristig: 'Bis 3 Monate',
+};
+
+export type Finding = {
+  status?: Status;
+  note: string;
+  priority?: Priority;
+  /** Lokale Datei-URIs (nativ) oder Data-URIs (Web) */
+  photos: string[];
+};
+
+export type CustomItem = { id: string; categoryId: string; title: string };
+
+export type Inspection = {
+  id: string;
+  customerId: string;
+  object: string;
+  date: string; // YYYY-MM-DD
+  participants: string;
+  results: Record<string, Finding>;
+  customItems: CustomItem[];
+  summary: string;
+  closedAt?: string;
+  createdAt: string;
+};
+
+export const emptyFinding = (): Finding => ({ note: '', photos: [] });
+
+export type AppointmentType = 'begehung' | 'schulung' | 'finanzamt' | 'sonstiges';
+
+export const appointmentTypes: { value: AppointmentType; label: string; icon: string }[] = [
+  { value: 'begehung', label: 'Begehung', icon: '🔍' },
+  { value: 'schulung', label: 'Schulung', icon: '🧯' },
+  { value: 'finanzamt', label: 'Finanzamt', icon: '🧾' },
+  { value: 'sonstiges', label: 'Sonstiges', icon: '📌' },
+];
+
+export type Appointment = {
+  id: string;
+  title: string;
+  type: AppointmentType;
+  date: string; // YYYY-MM-DD
+  time: string; // HH:MM
+  customerId?: string;
+  location: string;
+  note: string;
+  /** Minuten vor dem Termin; 0 = keine Erinnerung */
+  remindBefore: number;
+  notificationId?: string;
+  done?: boolean;
+};
+
+export type Note = { id: string; title: string; text: string; updatedAt: string };
+
+export type Tip = { id: string; category: string; title: string; text: string };
+
+export type TaxProfile = {
+  office: string;
+  taxNumber: string;
+  vatId: string;
+  smallBusiness: boolean;
+  advisor: string;
+  notes: string;
+};
+
+export const emptyTax: TaxProfile = { office: '', taxNumber: '', vatId: '', smallBusiness: true, advisor: '', notes: '' };
