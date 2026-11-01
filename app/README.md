@@ -37,3 +37,11 @@ Der Titel „Brandschutzbeauftragter“ erscheint im Bericht erst für Begehunge
 
 - Keine Datensicherung/Cloud: geht das Handy verloren, sind die Daten weg. Vor dem echten Einsatz Export oder Backup ergänzen.
 - Keine Store-Veröffentlichung, kein EAS-Projekt. Für eine installierbare App ohne Expo Go: `eas build` (kostenloser Expo-Account).
+
+## Web-App (GitHub Pages)
+
+Die Web-Version liegt auf dem Branch `gh-pages` und läuft unter
+https://lorikjezerci-prog.github.io/Brandschutz-Webseite-1/ . Am iPhone in Safari öffnen,
+Teilen → „Zum Home-Bildschirm“, dann startet sie im Vollbild. Neu bauen:
+`npx expo export -p web`, danach Meta-Tags/404.html/.nojekyll ergänzen und auf `gh-pages` pushen.
+Daten bleiben im Browser des Geräts. Erinnerungen und PDF-Teilen nur in der Handy-App.
