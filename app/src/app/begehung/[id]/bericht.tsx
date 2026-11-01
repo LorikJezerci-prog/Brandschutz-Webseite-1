@@ -1,6 +1,6 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Text, View } from 'react-native';
 
 import { Button, Card, Empty, Field, Pill, Screen, Section } from '@/components/ui';
 import { colors, type } from '@/constants/theme';
@@ -77,7 +77,12 @@ export default function Bericht() {
         })}
       </Section>
 
-      {busy ? (
+      <Button title="Bericht ansehen" icon="👁" kind="secondary" onPress={() => router.push(`/begehung/${i.id}/vorschau`)} />
+      {Platform.OS === 'web' ? (
+        <Text style={type.small}>
+          Das PDF zum Teilen erstellt die App auf dem Handy. Im Browser kannst du den Bericht nur ansehen.
+        </Text>
+      ) : busy ? (
         <ActivityIndicator color={colors.brand} size="large" />
       ) : (
         <Button title="PDF erstellen und teilen" icon="📄" onPress={create} />

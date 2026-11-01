@@ -9,13 +9,17 @@ export default function TabLayout() {
         <NativeTabs.Trigger.Label>Begehungen</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'checklist', selected: 'checklist' }} md="fact_check" />
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="termine">
+        <NativeTabs.Trigger.Label>Termine</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'calendar', selected: 'calendar' }} md="event" />
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="kunden">
         <NativeTabs.Trigger.Label>Kunden</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'building.2', selected: 'building.2.fill' }} md="apartment" />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="wissen">
-        <NativeTabs.Trigger.Label>Wissen</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'book', selected: 'book.fill' }} md="menu_book" />
+      <NativeTabs.Trigger name="buero">
+        <NativeTabs.Trigger.Label>Büro</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'briefcase', selected: 'briefcase.fill' }} md="work" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

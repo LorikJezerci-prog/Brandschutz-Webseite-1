@@ -1,12 +1,13 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { ConfirmButton } from '@/components/confirm-button';
 import { Button, Card, Empty, Pill, Progress, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { checklist } from '@/data/checklist';
 import { useStore } from '@/store';
-import { confirm } from '@/utils/confirm';
 import { formatDate, progress } from '@/utils/format';
+import { routeTo } from '@/utils/maps';
 
 export default function Begehung() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -58,6 +59,26 @@ export default function Begehung() {
         })}
       </Section>
 
+      <View style={{ flexDirection: 'row', gap: space.s }}>
+        {!!c?.address && (
+          <View style={{ flex: 1 }}>
+            <Button title="Route" icon="🚗" kind="secondary" onPress={() => routeTo(c.address)} />
+          </View>
+        )}
+        <View style={{ flex: 1 }}>
+          <Button
+            title="Nachtermin"
+            icon="📅"
+            kind="secondary"
+            onPress={() =>
+              router.push({
+                pathname: '/termin/[id]',
+                params: { id: 'neu', customerId: i.customerId, title: `Nachkontrolle ${c?.name ?? ''}`.trim() },
+              })
+            }
+          />
+        </View>
+      </View>
       <Button title="Bericht ansehen und senden" icon="📄" onPress={() => router.push(`/begehung/${i.id}/bericht`)} />
       {i.closedAt ? (
         <Button title="Wieder öffnen" kind="secondary" onPress={() => updateInspection(i.id, { closedAt: undefined })} />
@@ -68,15 +89,13 @@ export default function Begehung() {
           onPress={() => updateInspection(i.id, { closedAt: new Date().toISOString() })}
         />
       )}
-      <Button
+      <ConfirmButton
         title="Begehung löschen"
-        kind="danger"
-        onPress={() =>
-          confirm('Begehung löschen?', 'Alle Ergebnisse und Fotos dieser Begehung werden entfernt.', 'Löschen', () => {
-            removeInspection(i.id);
-            router.back();
-          })
-        }
+        warning="Alle Ergebnisse und Fotos dieser Begehung werden entfernt."
+        onConfirm={() => {
+          removeInspection(i.id);
+          router.back();
+        }}
       />
     </Screen>
   );

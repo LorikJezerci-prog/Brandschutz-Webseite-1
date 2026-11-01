@@ -8,7 +8,6 @@ import { colors, radius, space, type } from '@/constants/theme';
 import { categoryById, checklist } from '@/data/checklist';
 import { newId, useStore } from '@/store';
 import { emptyFinding, Priority, Status } from '@/store/types';
-import { confirm } from '@/utils/confirm';
 import { deletePhoto, takePhoto } from '@/utils/photos';
 
 const statusOptions: { value: Status; label: string; color?: string; bg?: string }[] = [
@@ -77,16 +76,19 @@ export default function Kategorie() {
                 />
                 <View style={styles.photos}>
                   {f.photos.map((uri) => (
-                    <Pressable
-                      key={uri}
-                      onLongPress={() =>
-                        confirm('Foto entfernen?', '', 'Entfernen', () => {
+                    <View key={uri}>
+                      <Image source={{ uri }} style={styles.photo} contentFit="cover" />
+                      <Pressable
+                        accessibilityLabel="Foto entfernen"
+                        hitSlop={8}
+                        onPress={() => {
                           deletePhoto(uri);
                           updateFinding(i.id, item.id, { photos: f.photos.filter((p) => p !== uri) });
-                        })
-                      }>
-                      <Image source={{ uri }} style={styles.photo} contentFit="cover" />
-                    </Pressable>
+                        }}
+                        style={styles.photoRemove}>
+                        <Text style={styles.photoRemoveText}>✕</Text>
+                      </Pressable>
+                    </View>
                   ))}
                 </View>
                 <View style={{ flexDirection: 'row', gap: space.s }}>
@@ -99,7 +101,6 @@ export default function Kategorie() {
                     <Button title="Aus Galerie" icon="🖼️" kind="secondary" onPress={() => addPhoto(item.id, 'library')} />
                   </View>
                 </View>
-                {f.photos.length > 0 && <Text style={type.small}>Lange auf ein Foto drücken, um es zu entfernen.</Text>}
               </View>
             )}
           </Card>
@@ -150,4 +151,16 @@ const styles = StyleSheet.create({
   },
   photos: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },
   photo: { width: 96, height: 72, borderRadius: radius.s, backgroundColor: colors.line },
+  photoRemove: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoRemoveText: { color: colors.white, fontSize: 13, fontWeight: '700' },
 });

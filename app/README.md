@@ -2,7 +2,8 @@
 
 Arbeitswerkzeug für Brandschutzbegehungen: Kunden verwalten, vor Ort 38 Prüfpunkte in 7 Bereichen abhaken,
 Mängel mit Foto, Notiz und Dringlichkeit festhalten, daraus einen PDF-Mängelbericht im Firmenlayout erzeugen und teilen.
-Alles wird offline auf dem Gerät gespeichert, es gibt keinen Server und kein Konto.
+Dazu Termine mit Erinnerung als Benachrichtigung, ein Finanzamt-Bereich (Steuerdaten, Fristen), Notizen, Praxistipps
+und Adressen direkt in der Karten-App (Karte und Route). Alles wird offline auf dem Gerät gespeichert, es gibt keinen Server und kein Konto.
 
 Expo SDK 58, Expo Router, TypeScript.
 
@@ -13,7 +14,7 @@ Expo SDK 58, Expo Router, TypeScript.
 3. App **Expo Go** aus dem App Store / Play Store installieren und den QR-Code aus dem Terminal scannen.
    Handy und Computer müssen im selben WLAN sein.
 
-Im Browser ansehen: `npx expo start --web` (ohne Kamera; PDF öffnet den Druckdialog).
+Im Browser ansehen: `npx expo start --web` (ohne Kamera und Erinnerungen; Bericht nur als Vorschau).
 
 ## Aufbau
 
@@ -24,6 +25,9 @@ Im Browser ansehen: `npx expo start --web` (ohne Kamera; PDF öffnet den Druckdi
 | Leistungen und Schnellcheck (aus der Website) | `src/data/services.ts`, `src/data/quick-check.ts` |
 | PDF-Bericht | `src/utils/report.ts` |
 | Speicher (AsyncStorage) | `src/store/` |
+| Erinnerungen (expo-notifications) | `src/utils/reminders.ts` |
+| Karten-App | `src/utils/maps.ts` |
+| Tipps | `src/data/tips.ts` |
 | Screens | `src/app/` |
 
 Der Titel „Brandschutzbeauftragter“ erscheint im Bericht erst für Begehungen ab dem 03.12.2026

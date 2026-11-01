@@ -17,8 +17,9 @@ export default function TabLayout() {
         sceneStyle: { backgroundColor: colors.bg },
       }}>
       <Tabs.Screen name="index" options={{ title: 'Begehungen', tabBarIcon: icon('📋') }} />
+      <Tabs.Screen name="termine" options={{ title: 'Termine', tabBarIcon: icon('📅') }} />
       <Tabs.Screen name="kunden" options={{ title: 'Kunden', tabBarIcon: icon('🏢') }} />
-      <Tabs.Screen name="wissen" options={{ title: 'Wissen', tabBarIcon: icon('📖') }} />
+      <Tabs.Screen name="buero" options={{ title: 'Büro', tabBarIcon: icon('💼') }} />
     </Tabs>
   );
 }

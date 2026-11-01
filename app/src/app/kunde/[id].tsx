@@ -2,12 +2,13 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Linking, Text, View } from 'react-native';
 
+import { ConfirmButton } from '@/components/confirm-button';
 import { CustomerForm } from '@/components/customer-form';
 import { Button, Card, Empty, Screen, Section } from '@/components/ui';
 import { colors, type } from '@/constants/theme';
 import { useStore } from '@/store';
-import { confirm } from '@/utils/confirm';
 import { formatDate, progress } from '@/utils/format';
+import { openInMaps, routeTo } from '@/utils/maps';
 
 export default function Kunde() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -54,6 +55,22 @@ export default function Kunde() {
         )}
         {!!c.notes && <Text style={[type.small, { marginTop: 6 }]}>{c.notes}</Text>}
       </Card>
+      {!!c.address && (
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View style={{ flex: 1 }}>
+            <Button title="Karte" icon="🗺️" kind="secondary" onPress={() => openInMaps(c.address)} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Button title="Route" icon="🚗" kind="secondary" onPress={() => routeTo(c.address)} />
+          </View>
+        </View>
+      )}
+      <Button
+        title="Termin anlegen"
+        icon="📅"
+        kind="secondary"
+        onPress={() => router.push({ pathname: '/termin/[id]', params: { id: 'neu', customerId: c.id, title: `Begehung ${c.name}` } })}
+      />
       <View style={{ flexDirection: 'row', gap: 8 }}>
         <View style={{ flex: 1 }}>
           <Button title="Begehung starten" onPress={() => router.push({ pathname: '/begehung/neu', params: { customerId: c.id } })} />
@@ -78,15 +95,13 @@ export default function Kunde() {
           );
         })}
       </Section>
-      <Button
+      <ConfirmButton
         title="Kunden löschen"
-        kind="danger"
-        onPress={() =>
-          confirm('Kunden löschen?', `${c.name} und ${mine.length} Begehung(en) mit Fotos werden entfernt.`, 'Löschen', () => {
-            removeCustomer(c.id);
-            router.back();
-          })
-        }
+        warning={`${c.name} und ${mine.length} Begehung(en) mit Fotos werden entfernt.`}
+        onConfirm={() => {
+          removeCustomer(c.id);
+          router.back();
+        }}
       />
     </Screen>
   );

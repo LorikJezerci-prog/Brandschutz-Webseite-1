@@ -2,7 +2,7 @@
   "expo": {
     "name": "Brandschutz Ried",
     "slug": "brandschutz-ried",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "brandschutzried",
@@ -43,6 +43,12 @@
         {
           "cameraPermission": "Die Kamera wird genutzt, um Mängel bei Brandschutzbegehungen zu fotografieren.",
           "photosPermission": "Fotos aus der Mediathek können als Mängelbilder an eine Begehung angehängt werden."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0A6B44"
         }
       ]
     ],

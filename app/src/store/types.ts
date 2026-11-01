@@ -43,3 +43,42 @@ export type Inspection = {
 };
 
 export const emptyFinding = (): Finding => ({ note: '', photos: [] });
+
+export type AppointmentType = 'begehung' | 'schulung' | 'finanzamt' | 'sonstiges';
+
+export const appointmentTypes: { value: AppointmentType; label: string; icon: string }[] = [
+  { value: 'begehung', label: 'Begehung', icon: '🔍' },
+  { value: 'schulung', label: 'Schulung', icon: '🧯' },
+  { value: 'finanzamt', label: 'Finanzamt', icon: '🧾' },
+  { value: 'sonstiges', label: 'Sonstiges', icon: '📌' },
+];
+
+export type Appointment = {
+  id: string;
+  title: string;
+  type: AppointmentType;
+  date: string; // YYYY-MM-DD
+  time: string; // HH:MM
+  customerId?: string;
+  location: string;
+  note: string;
+  /** Minuten vor dem Termin; 0 = keine Erinnerung */
+  remindBefore: number;
+  notificationId?: string;
+  done?: boolean;
+};
+
+export type Note = { id: string; title: string; text: string; updatedAt: string };
+
+export type Tip = { id: string; category: string; title: string; text: string };
+
+export type TaxProfile = {
+  office: string;
+  taxNumber: string;
+  vatId: string;
+  smallBusiness: boolean;
+  advisor: string;
+  notes: string;
+};
+
+export const emptyTax: TaxProfile = { office: '', taxNumber: '', vatId: '', smallBusiness: true, advisor: '', notes: '' };

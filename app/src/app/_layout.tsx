@@ -27,6 +27,12 @@ export default function RootLayout() {
           <Stack.Screen name="begehung/[id]/index" options={{ title: 'Begehung' }} />
           <Stack.Screen name="begehung/[id]/[kategorie]" options={{ title: 'Prüfpunkte' }} />
           <Stack.Screen name="begehung/[id]/bericht" options={{ title: 'Mängelbericht' }} />
+          <Stack.Screen name="begehung/[id]/vorschau" options={{ title: 'Berichtsvorschau' }} />
+          <Stack.Screen name="termin/[id]" options={{ title: 'Termin', presentation: 'modal' }} />
+          <Stack.Screen name="finanzamt" options={{ title: 'Finanzamt' }} />
+          <Stack.Screen name="notiz/[id]" options={{ title: 'Notiz' }} />
+          <Stack.Screen name="tipps" options={{ title: 'Tipps' }} />
+          <Stack.Screen name="leistungen" options={{ title: 'Leistungen' }} />
           <Stack.Screen name="kunde/[id]" options={{ title: 'Kunde' }} />
           <Stack.Screen name="leistung/[slug]" options={{ title: 'Leistung' }} />
           <Stack.Screen name="schnellcheck" options={{ title: 'Schnellcheck' }} />
