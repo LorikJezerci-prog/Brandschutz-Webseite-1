@@ -1,5 +1,6 @@
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Platform, View, ViewStyle } from 'react-native';
 
 import { colors } from '@/constants/theme';
 import { StoreProvider } from '@/store';
@@ -9,15 +10,25 @@ const theme = {
   colors: { ...DefaultTheme.colors, primary: colors.brand, background: colors.bg, card: colors.card, text: colors.text, border: colors.line },
 };
 
+/** Im Web reicht das Grün bis unter die Statusleiste des iPhones */
+const frame = {
+  flex: 1,
+  backgroundColor: colors.brand,
+  paddingTop: Platform.OS === 'web' ? 'env(safe-area-inset-top, 0px)' : 0,
+} as unknown as ViewStyle;
+
 export default function RootLayout() {
   return (
     <ThemeProvider value={theme}>
       <StoreProvider>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
+        <View style={frame}>
         <Stack
           screenOptions={{
-            headerTintColor: colors.brand,
-            headerTitleStyle: { color: colors.text },
+            headerTintColor: colors.white,
+            headerStyle: { backgroundColor: colors.brand },
+            headerShadowVisible: false,
+            headerTitleStyle: { color: colors.white, fontWeight: '700' },
             headerBackButtonDisplayMode: 'minimal',
             contentStyle: { backgroundColor: colors.bg },
           }}>
@@ -37,6 +48,7 @@ export default function RootLayout() {
           <Stack.Screen name="leistung/[slug]" options={{ title: 'Leistung' }} />
           <Stack.Screen name="schnellcheck" options={{ title: 'Schnellcheck' }} />
         </Stack>
+        </View>
       </StoreProvider>
     </ThemeProvider>
   );

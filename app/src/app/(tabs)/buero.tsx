@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Icon, IconName } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
@@ -8,10 +9,12 @@ import { isQualified, profile } from '@/data/profile';
 import { useStore } from '@/store';
 import { formatDate } from '@/utils/format';
 
-function Tile({ icon, title, text, onPress }: { icon: string; title: string; text: string; onPress: () => void }) {
+function Tile({ icon, title, text, onPress }: { icon: IconName; title: string; text: string; onPress: () => void }) {
   return (
     <Card onPress={onPress} style={styles.tile}>
-      <Text style={styles.tileIcon}>{icon}</Text>
+      <View style={styles.tileIcon}>
+        <Icon name={icon} size={22} />
+      </View>
       <Text style={[type.body, { fontWeight: '700' }]}>{title}</Text>
       <Text style={type.small} numberOfLines={2}>
         {text}
@@ -29,21 +32,21 @@ export default function Buero() {
     <Screen header={<TabHeader title="Büro" subtitle="Finanzamt, Notizen, Tipps und dein Wissen an einem Ort." />}>
       <View style={styles.grid}>
         <Tile
-          icon="🧾"
+          icon="receipt-outline"
           title="Finanzamt"
           text={taxMissing ? 'Steuernummer fehlt noch' : `St.-Nr. ${tax.taxNumber}`}
           onPress={() => router.push('/finanzamt')}
         />
-        <Tile icon="💡" title="Tipps" text="Praxis, Bericht, Kunden, Gründung" onPress={() => router.push('/tipps')} />
-        <Tile icon="⚡" title="Schnellcheck" text="Sechs Fragen fürs Erstgespräch" onPress={() => router.push('/schnellcheck')} />
-        <Tile icon="📚" title="Leistungen" text="Deine 14 Leistungen zum Nachschlagen" onPress={() => router.push('/leistungen')} />
+        <Tile icon="bulb-outline" title="Tipps" text="Praxis, Bericht, Kunden, Gründung" onPress={() => router.push('/tipps')} />
+        <Tile icon="flash-outline" title="Schnellcheck" text="Sechs Fragen fürs Erstgespräch" onPress={() => router.push('/schnellcheck')} />
+        <Tile icon="library-outline" title="Leistungen" text="Deine 14 Leistungen zum Nachschlagen" onPress={() => router.push('/leistungen')} />
       </View>
 
       <Section
         title={`Notizen (${notes.length})`}
         right={
           <Text style={styles.link} onPress={() => router.push('/notiz/neu')}>
-            ＋ Neue Notiz
+            + Neue Notiz
           </Text>
         }>
         {notes.length === 0 && (
@@ -87,6 +90,6 @@ export default function Buero() {
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.m },
   tile: { flexBasis: '47%', flexGrow: 1, minHeight: 120 },
-  tileIcon: { fontSize: 26 },
+  tileIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.brandSoft, alignItems: 'center', justifyContent: 'center' },
   link: { color: colors.brand, fontWeight: '600', fontSize: 14 },
 });

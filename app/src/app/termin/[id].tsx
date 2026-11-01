@@ -67,7 +67,7 @@ export default function Termin() {
       <Section title="Art">
         <Segmented
           value={kind}
-          options={appointmentTypes.map((a) => ({ value: a.value, label: `${a.icon} ${a.label}` }))}
+          options={appointmentTypes.map((a) => ({ value: a.value, label: a.label }))}
           onChange={setKind}
         />
       </Section>
@@ -123,7 +123,7 @@ export default function Termin() {
           onChangeText={setLocation}
           placeholder={customer?.address || 'Adresse, leer = Adresse des Kunden'}
         />
-        {!!place && <Button title="Route in Karten-App" icon="🗺️" kind="secondary" onPress={() => routeTo(place)} />}
+        {!!place && <Button title="Route in Karten-App" icon="map-outline" kind="secondary" onPress={() => routeTo(place)} />}
         <Field label="Notiz" value={note} onChangeText={setNote} multiline placeholder="Was mitnehmen, wer ist Ansprechpartner …" />
       </Card>
 

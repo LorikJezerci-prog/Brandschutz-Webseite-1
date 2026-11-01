@@ -77,7 +77,7 @@ export default function Bericht() {
         })}
       </Section>
 
-      <Button title="Bericht ansehen" icon="👁" kind="secondary" onPress={() => router.push(`/begehung/${i.id}/vorschau`)} />
+      <Button title="Bericht ansehen" icon="eye-outline" kind="secondary" onPress={() => router.push(`/begehung/${i.id}/vorschau`)} />
       {Platform.OS === 'web' ? (
         <Text style={type.small}>
           Das PDF zum Teilen erstellt die App auf dem Handy. Im Browser kannst du den Bericht nur ansehen.
@@ -85,7 +85,7 @@ export default function Bericht() {
       ) : busy ? (
         <ActivityIndicator color={colors.brand} size="large" />
       ) : (
-        <Button title="PDF erstellen und teilen" icon="📄" onPress={create} />
+        <Button title="PDF erstellen und teilen" icon="document-text-outline" onPress={create} />
       )}
       <Text style={type.small}>
         Das PDF enthält Kopf mit Logo, Kundendaten, Mängel nach Dringlichkeit mit Fotos, die Übersicht aller Prüfpunkte und ein

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Empty, Pill, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
@@ -32,15 +33,21 @@ export default function Termine() {
             <Text style={[styles.dateNum, isToday && { color: colors.white }]}>{a.date.slice(8, 10)}.{a.date.slice(5, 7)}.</Text>
           </View>
           <View style={{ flex: 1, gap: 2 }}>
+            {kind && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Icon name={kind.icon} size={13} color={colors.muted} />
+                <Text style={[type.small, { fontSize: 12 }]}>{kind.label}</Text>
+              </View>
+            )}
             <Text style={[type.body, { fontWeight: '600' }, a.done && styles.doneText]} numberOfLines={2}>
-              {kind?.icon} {a.title}
+              {a.title}
             </Text>
             <Text style={type.small} numberOfLines={1}>
               {a.time} Uhr{customer ? ` · ${customer.name}` : ''}
               {a.location ? ` · ${a.location}` : ''}
             </Text>
           </View>
-          {a.remindBefore > 0 && !a.done && <Text style={{ fontSize: 16 }}>🔔</Text>}
+          {a.remindBefore > 0 && !a.done && <Icon name="notifications-outline" size={18} color={colors.muted} />}
         </View>
       </Card>
     );
@@ -48,7 +55,7 @@ export default function Termine() {
 
   return (
     <Screen header={<TabHeader title="Termine" subtitle="Begehungen, Schulungen und Fristen mit Erinnerung aufs Handy." />}>
-      <Button title="Termin anlegen" icon="＋" onPress={() => router.push('/termin/neu')} />
+      <Button title="Termin anlegen" icon="add" onPress={() => router.push('/termin/neu')} />
       {!remindersSupported && (
         <Text style={type.small}>Erinnerungen kommen nur in der Handy-App, nicht in der Browser-Vorschau.</Text>
       )}

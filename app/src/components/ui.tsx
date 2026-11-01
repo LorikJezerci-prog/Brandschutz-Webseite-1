@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 
 import { colors, radius, space, type } from '@/constants/theme';
+import { Icon, IconName } from './icon';
 
 export const tap = () => {
   if (Platform.OS !== 'web') Haptics.selectionAsync().catch(() => {});
@@ -60,7 +61,7 @@ export function Button({
   onPress: () => void;
   kind?: ButtonKind;
   disabled?: boolean;
-  icon?: string;
+  icon?: IconName;
 }) {
   const bg = kind === 'primary' ? colors.brand : kind === 'danger' ? colors.dangerSoft : colors.brandSoft;
   const fg = kind === 'primary' ? colors.white : kind === 'danger' ? colors.danger : colors.brandDark;
@@ -73,10 +74,10 @@ export function Button({
         onPress();
       }}
       style={({ pressed }) => [styles.button, { backgroundColor: bg }, (pressed || disabled) && styles.pressed]}>
-      <Text style={[styles.buttonText, { color: fg }]}>
-        {icon ? `${icon}  ` : ''}
-        {title}
-      </Text>
+      <View style={styles.buttonInner}>
+        {icon ? <Icon name={icon} size={20} color={fg} /> : null}
+        <Text style={[styles.buttonText, { color: fg }]}>{title}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.6 },
   button: { minHeight: 50, borderRadius: radius.m, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l, borderCurve: 'continuous' },
+  buttonInner: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   buttonText: { fontSize: 16, fontWeight: '600' },
   input: {
     backgroundColor: colors.card,
@@ -201,6 +203,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     color: colors.text,
+    outlineColor: colors.brand,
   },
   segment: { flexDirection: 'row', gap: space.s },
   segmentItem: {

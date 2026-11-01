@@ -47,7 +47,7 @@ export default function Tipps() {
           <Button title="Abbrechen" kind="secondary" onPress={() => setOpen(false)} />
         </Card>
       ) : (
-        <Button title="Eigenen Tipp hinzufügen" icon="＋" kind="secondary" onPress={() => setOpen(true)} />
+        <Button title="Eigenen Tipp hinzufügen" icon="add" kind="secondary" onPress={() => setOpen(true)} />
       )}
 
       <Section title={`${shown.length} Tipps`}>

@@ -3,12 +3,24 @@ import { useState } from 'react';
 import { Linking, Text, View } from 'react-native';
 
 import { ConfirmButton } from '@/components/confirm-button';
+import { Icon, IconName } from '@/components/icon';
 import { CustomerForm } from '@/components/customer-form';
 import { Button, Card, Empty, Screen, Section } from '@/components/ui';
 import { colors, type } from '@/constants/theme';
 import { useStore } from '@/store';
 import { formatDate, progress } from '@/utils/format';
 import { openInMaps, routeTo } from '@/utils/maps';
+
+function InfoRow({ icon, text, link, onPress }: { icon: IconName; text: string; link?: boolean; onPress?: () => void }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <Icon name={icon} size={18} color={colors.muted} />
+      <Text style={[type.body, link && { color: colors.brand }]} onPress={onPress}>
+        {text}
+      </Text>
+    </View>
+  );
+}
 
 export default function Kunde() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,32 +54,28 @@ export default function Kunde() {
         <Text style={type.title}>{c.name}</Text>
         {!!c.branche && <Text style={type.small}>{c.branche}</Text>}
         {!!c.address && <Text style={type.body}>{c.address}</Text>}
-        {!!c.contact && <Text style={type.body}>👤 {c.contact}</Text>}
+        {!!c.contact && <InfoRow icon="person-outline" text={c.contact} />}
         {!!c.phone && (
-          <Text style={[type.body, { color: colors.brand }]} onPress={() => Linking.openURL(`tel:${c.phone.replace(/\s/g, '')}`)}>
-            📞 {c.phone}
-          </Text>
+          <InfoRow icon="call-outline" text={c.phone} link onPress={() => Linking.openURL(`tel:${c.phone.replace(/\s/g, '')}`)} />
         )}
         {!!c.email && (
-          <Text style={[type.body, { color: colors.brand }]} onPress={() => Linking.openURL(`mailto:${c.email}`)}>
-            ✉️ {c.email}
-          </Text>
+          <InfoRow icon="mail-outline" text={c.email} link onPress={() => Linking.openURL(`mailto:${c.email}`)} />
         )}
         {!!c.notes && <Text style={[type.small, { marginTop: 6 }]}>{c.notes}</Text>}
       </Card>
       {!!c.address && (
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <View style={{ flex: 1 }}>
-            <Button title="Karte" icon="🗺️" kind="secondary" onPress={() => openInMaps(c.address)} />
+            <Button title="Karte" icon="map-outline" kind="secondary" onPress={() => openInMaps(c.address)} />
           </View>
           <View style={{ flex: 1 }}>
-            <Button title="Route" icon="🚗" kind="secondary" onPress={() => routeTo(c.address)} />
+            <Button title="Route" icon="navigate-outline" kind="secondary" onPress={() => routeTo(c.address)} />
           </View>
         </View>
       )}
       <Button
         title="Termin anlegen"
-        icon="📅"
+        icon="calendar-outline"
         kind="secondary"
         onPress={() => router.push({ pathname: '/termin/[id]', params: { id: 'neu', customerId: c.id, title: `Begehung ${c.name}` } })}
       />

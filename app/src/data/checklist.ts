@@ -5,13 +5,15 @@
  */
 
 export type ChecklistItem = { id: string; title: string; hint?: string; basis?: string };
-export type ChecklistCategory = { id: string; title: string; icon: string; items: ChecklistItem[] };
+import type { IconName } from '@/components/icon';
+
+export type ChecklistCategory = { id: string; title: string; icon: IconName; items: ChecklistItem[] };
 
 export const checklist: ChecklistCategory[] = [
   {
     id: 'fluchtwege',
     title: 'Flucht- und Rettungswege',
-    icon: '🚪',
+    icon: 'exit-outline',
     items: [
       { id: 'fw-frei', title: 'Fluchtwege frei, nicht eingeengt', hint: 'Keine Lagerung, Mindestbreite eingehalten', basis: 'ASR A2.3' },
       { id: 'fw-notausgang', title: 'Notausgänge von innen ohne Hilfsmittel zu öffnen', basis: 'ASR A2.3' },
@@ -24,7 +26,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'tueren',
     title: 'Brand- und Rauchschutztüren',
-    icon: '🛡️',
+    icon: 'shield-checkmark-outline',
     items: [
       { id: 'tu-keil', title: 'Nicht verkeilt oder unzulässig offengehalten', hint: 'Keile, Haken, Kabelbinder' },
       { id: 'tu-schliessen', title: 'Schließen selbsttätig und vollständig' },
@@ -36,7 +38,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'loescher',
     title: 'Feuerlöscher und Löscheinrichtungen',
-    icon: '🧯',
+    icon: 'flame-outline',
     items: [
       { id: 'lo-anzahl', title: 'Ausreichende Löschmitteleinheiten je Bereich', basis: 'ASR A2.2' },
       { id: 'lo-pruef', title: 'Prüfplakette gültig (höchstens 2 Jahre)', basis: 'ASR A2.2, DIN 14406-4' },
@@ -48,7 +50,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'lagerung',
     title: 'Brandlasten und Lagerung',
-    icon: '📦',
+    icon: 'cube-outline',
     items: [
       { id: 'la-treppe', title: 'Keine brennbaren Stoffe in Treppenräumen und Fluren' },
       { id: 'la-gefahr', title: 'Gefahrstoffe in geeigneten Schränken oder Räumen', basis: 'TRGS 510' },
@@ -60,7 +62,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'elektro',
     title: 'Elektrik und Zündquellen',
-    icon: '⚡',
+    icon: 'flash-outline',
     items: [
       { id: 'el-steckdose', title: 'Keine hintereinander gesteckten Mehrfachsteckdosen' },
       { id: 'el-pruef', title: 'Prüfung elektrischer Geräte dokumentiert', basis: 'DGUV Vorschrift 3' },
@@ -72,7 +74,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'technik',
     title: 'Melde- und Anlagentechnik',
-    icon: '🔔',
+    icon: 'notifications-outline',
     items: [
       { id: 'te-bma', title: 'Brandmeldeanlage ohne Störung, Wartung aktuell', basis: 'DIN 14675' },
       { id: 'te-melder', title: 'Melder nicht abgedeckt oder verstellt' },
@@ -84,7 +86,7 @@ export const checklist: ChecklistCategory[] = [
   {
     id: 'organisation',
     title: 'Organisation',
-    icon: '📋',
+    icon: 'clipboard-outline',
     items: [
       { id: 'or-bso-a', title: 'Brandschutzordnung Teil A ausgehängt', basis: 'DIN 14096' },
       { id: 'or-bso-bc', title: 'Teil B und C vorhanden und bekannt', basis: 'DIN 14096' },

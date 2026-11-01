@@ -45,7 +45,7 @@ export default function Begehungen() {
 
   return (
     <Screen header={<TabHeader title="Begehungen" subtitle="Vor Ort prüfen, Mängel festhalten, Bericht als PDF senden." />}>
-      <Button title="Neue Begehung starten" icon="＋" onPress={() => router.push('/begehung/neu')} />
+      <Button title="Neue Begehung starten" icon="add" onPress={() => router.push('/begehung/neu')} />
 
       {ready && inspections.length === 0 ? (
         <Empty

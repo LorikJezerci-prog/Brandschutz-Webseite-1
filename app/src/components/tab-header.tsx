@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, space } from '@/constants/theme';
@@ -8,7 +8,7 @@ import { LogoMark } from './ui';
 export function TabHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.wrap, { paddingTop: insets.top + space.m }]}>
+    <View style={[styles.wrap, { paddingTop: (Platform.OS === 'web' ? 0 : insets.top) + space.m }]}>
       <View style={styles.row}>
         <View style={styles.logoBox}>
           <LogoMark size={36} />
