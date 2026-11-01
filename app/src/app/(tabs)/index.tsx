@@ -9,7 +9,7 @@ import { Inspection } from '@/store/types';
 import { formatDate, progress } from '@/utils/format';
 
 export default function Begehungen() {
-  const { inspections, customers, ready } = useStore();
+  const { inspections, customers, ready, loadDemo } = useStore();
   const open = inspections.filter((i) => !i.closedAt);
   const closed = inspections.filter((i) => i.closedAt);
   const customerName = (id: string) => customers.find((c) => c.id === id)?.name ?? 'Unbekannter Kunde';
@@ -51,6 +51,17 @@ export default function Begehungen() {
         <Empty
           title="Noch keine Begehung"
           text="Leg zuerst einen Kunden an oder starte direkt. Alles bleibt auf diesem Gerät gespeichert, auch ohne Netz."
+          action={
+            <Button
+              title="Erst mal mit Musterbetrieb üben"
+              icon="business-outline"
+              kind="secondary"
+              onPress={() => {
+                loadDemo();
+                router.push('/begehung/demo-begehung');
+              }}
+            />
+          }
         />
       ) : null}
 

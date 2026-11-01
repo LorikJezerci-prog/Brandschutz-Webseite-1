@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { ConfirmButton } from '@/components/confirm-button';
 import { Icon, IconName } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Screen, Section } from '@/components/ui';
@@ -24,7 +25,7 @@ function Tile({ icon, title, text, onPress }: { icon: IconName; title: string; t
 }
 
 export default function Buero() {
-  const { notes, tax } = useStore();
+  const { notes, tax, hasDemo, loadDemo, removeDemo } = useStore();
   const qualified = isQualified();
   const taxMissing = !tax.taxNumber;
 
@@ -66,6 +67,32 @@ export default function Buero() {
             <Text style={[type.small, { fontSize: 12 }]}>{formatDate(n.updatedAt)}</Text>
           </Card>
         ))}
+      </Section>
+
+      <Section title="Übung">
+        <Card>
+          <Text style={[type.body, { fontWeight: '600' }]}>Musterbetrieb zum Ausprobieren</Text>
+          <Text style={type.small}>
+            {hasDemo
+              ? '„Muster Metallbau GmbH (Übung)“ ist geladen: unter Kunden, Begehungen und Termine. Die Begehung ist halb fertig, den Rest kannst du selbst prüfen und dann den Bericht ansehen.'
+              : 'Lädt einen erfundenen Metallbaubetrieb mit halb fertiger Begehung, 8 Mängeln, zwei Terminen und einer Notiz. Deine echten Daten bleiben unberührt.'}
+          </Text>
+          {hasDemo ? (
+            <>
+              <Button title="Musterbegehung öffnen" icon="clipboard-outline" onPress={() => router.push('/begehung/demo-begehung')} />
+              <ConfirmButton title="Musterbetrieb entfernen" warning="Nur die Übungsdaten werden gelöscht, deine echten bleiben." onConfirm={removeDemo} />
+            </>
+          ) : (
+            <Button
+              title="Musterbetrieb laden"
+              icon="business-outline"
+              onPress={() => {
+                loadDemo();
+                router.push('/begehung/demo-begehung');
+              }}
+            />
+          )}
+        </Card>
       </Section>
 
       <Section title="Dein Profil im Bericht">
