@@ -112,9 +112,39 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
 export async function shareReport(i: Inspection, c: Customer | undefined) {
   const html = await buildReportHtml(i, c);
   if (Platform.OS === 'web') {
-    await Print.printAsync({ html });
+    printInBrowser(html, `Maengelbericht ${c?.name ?? ''} ${i.date}`.trim());
     return;
   }
   const { uri } = await Print.printToFileAsync({ html });
   await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'Mängelbericht teilen' });
+}
+
+/**
+ * Web/iPhone-Home-Bildschirm: Bericht in einem unsichtbaren Rahmen drucken.
+ * Im Druckdialog von iOS lässt er sich über „Teilen“ als PDF sichern oder verschicken.
+ */
+function printInBrowser(html: string, title: string) {
+  const old = document.getElementById('bericht-druck');
+  if (old) old.remove();
+  const frame = document.createElement('iframe');
+  frame.id = 'bericht-druck';
+  frame.setAttribute('aria-hidden', 'true');
+  frame.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';
+  document.body.appendChild(frame);
+  const doc = frame.contentWindow!.document;
+  doc.open();
+  doc.write(html.replace('<head>', `<head><title>${title.replace(/[<>&"]/g, '')}</title>`));
+  doc.close();
+  const go = () => {
+    const prevTitle = document.title;
+    document.title = title;
+    frame.contentWindow!.focus();
+    frame.contentWindow!.print();
+    setTimeout(() => (document.title = prevTitle), 1000);
+  };
+  // Bilder (Logo, Fotos) erst laden lassen
+  const imgs = Array.from(doc.images);
+  Promise.all(imgs.map((im) => (im.complete ? null : new Promise((r) => { im.onload = im.onerror = r; })))).then(() =>
+    setTimeout(go, 150),
+  );
 }

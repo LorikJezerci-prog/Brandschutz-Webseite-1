@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
+import { buildDemo, isDemo } from '@/data/demo';
 import { deletePhoto } from '@/utils/photos';
 import { cancelReminder, scheduleReminder } from '@/utils/reminders';
 import {
@@ -45,6 +46,9 @@ type Store = Data & {
   addTip: (t: Omit<Tip, 'id'>) => void;
   removeTip: (id: string) => void;
   updateTax: (patch: Partial<TaxProfile>) => void;
+  hasDemo: boolean;
+  loadDemo: () => void;
+  removeDemo: () => void;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -163,9 +167,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeTip: (id) => setData((d) => ({ ...d, tips: d.tips.filter((x) => x.id !== id) })),
 
     updateTax: (patch) => setData((d) => ({ ...d, tax: { ...d.tax, ...patch } })),
+
+    hasDemo: data.customers.some((c) => isDemo(c.id)),
+    loadDemo: () => {
+      const demo = buildDemo();
+      setData((d) => {
+        const clean = withoutDemo(d);
+        return {
+          ...clean,
+          customers: [demo.customer, ...clean.customers],
+          inspections: [demo.inspection, ...clean.inspections],
+          appointments: [...clean.appointments, ...demo.appointments],
+          notes: [...demo.notes, ...clean.notes],
+        };
+      });
+    },
+    removeDemo: () =>
+      setData((d) => {
+        d.inspections.filter((i) => isDemo(i.id) || isDemo(i.customerId)).forEach(removePhotosOf);
+        d.appointments.filter((a) => isDemo(a.id)).forEach((a) => cancelReminder(a.notificationId));
+        return withoutDemo(d);
+      }),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;
+}
+
+function withoutDemo(d: Data): Data {
+  return {
+    ...d,
+    customers: d.customers.filter((c) => !isDemo(c.id)),
+    inspections: d.inspections.filter((i) => !isDemo(i.id) && !isDemo(i.customerId)),
+    appointments: d.appointments
+      .filter((a) => !isDemo(a.id))
+      .map((a) => (isDemo(a.customerId) ? { ...a, customerId: undefined } : a)),
+    notes: d.notes.filter((n) => !isDemo(n.id)),
+  };
 }
 
 function removePhotosOf(i: Inspection) {

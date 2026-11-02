@@ -94,11 +94,11 @@ export default function Kategorie() {
                 <View style={{ flexDirection: 'row', gap: space.s }}>
                   {Platform.OS !== 'web' && (
                     <View style={{ flex: 1 }}>
-                      <Button title="Foto" icon="📷" kind="secondary" onPress={() => addPhoto(item.id, 'camera')} />
+                      <Button title="Foto" icon="camera-outline" kind="secondary" onPress={() => addPhoto(item.id, 'camera')} />
                     </View>
                   )}
                   <View style={{ flex: 1 }}>
-                    <Button title="Aus Galerie" icon="🖼️" kind="secondary" onPress={() => addPhoto(item.id, 'library')} />
+                    <Button title="Aus Galerie" icon="images-outline" kind="secondary" onPress={() => addPhoto(item.id, 'library')} />
                   </View>
                 </View>
               </View>

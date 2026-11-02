@@ -17,7 +17,7 @@ export default function Kunden() {
 
   return (
     <Screen header={<TabHeader title="Kunden" subtitle="Betriebe und Objekte, die du betreust." />}>
-      <Button title="Kunden anlegen" icon="＋" onPress={() => router.push('/kunde/neu')} />
+      <Button title="Kunden anlegen" icon="add" onPress={() => router.push('/kunde/neu')} />
       {customers.length > 3 && (
         <TextInput
           value={q}

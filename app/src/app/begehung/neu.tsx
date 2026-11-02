@@ -31,7 +31,7 @@ export default function NeueBegehung() {
         title="Kunde"
         right={
           <Text style={styles.link} onPress={() => router.push('/kunde/neu')}>
-            ＋ Neuer Kunde
+            + Neuer Kunde
           </Text>
         }>
         {customers.length === 0 ? (

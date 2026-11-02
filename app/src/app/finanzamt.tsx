@@ -61,7 +61,7 @@ export default function Finanzamt() {
             <Text style={[type.small, a.date < t && { color: colors.danger, fontWeight: '700' }]}>
               {a.date < t ? 'Überfällig seit ' : 'Fällig am '}
               {formatDate(a.date)}
-              {a.remindBefore > 0 ? ' · 🔔' : ''}
+              {a.remindBefore > 0 ? ' · Erinnerung an' : ''}
             </Text>
           </Card>
         ))}
@@ -75,13 +75,13 @@ export default function Finanzamt() {
                 router.push({ pathname: '/termin/[id]', params: { id: 'neu', type: 'finanzamt', title: p } });
               }}
               style={styles.chip}>
-              <Text style={styles.chipText}>＋ {p}</Text>
+              <Text style={styles.chipText}>+ {p}</Text>
             </Pressable>
           ))}
         </View>
       </Section>
 
-      <Button title="ELSTER öffnen" icon="🌐" kind="secondary" onPress={() => Linking.openURL('https://www.elster.de/eportal/start')} />
+      <Button title="ELSTER öffnen" icon="globe-outline" kind="secondary" onPress={() => Linking.openURL('https://www.elster.de/eportal/start')} />
       <Text style={type.small}>
         Fristen und Steuerfragen bitte mit deinem Steuerberater abstimmen. Die App erinnert nur, sie berechnet keine Fristen.
       </Text>

@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/icon';
+
 export type Customer = {
   id: string;
   name: string;
@@ -46,11 +48,11 @@ export const emptyFinding = (): Finding => ({ note: '', photos: [] });
 
 export type AppointmentType = 'begehung' | 'schulung' | 'finanzamt' | 'sonstiges';
 
-export const appointmentTypes: { value: AppointmentType; label: string; icon: string }[] = [
-  { value: 'begehung', label: 'Begehung', icon: '🔍' },
-  { value: 'schulung', label: 'Schulung', icon: '🧯' },
-  { value: 'finanzamt', label: 'Finanzamt', icon: '🧾' },
-  { value: 'sonstiges', label: 'Sonstiges', icon: '📌' },
+export const appointmentTypes: { value: AppointmentType; label: string; icon: IconName }[] = [
+  { value: 'begehung', label: 'Begehung', icon: 'search-outline' },
+  { value: 'schulung', label: 'Schulung', icon: 'school-outline' },
+  { value: 'finanzamt', label: 'Finanzamt', icon: 'receipt-outline' },
+  { value: 'sonstiges', label: 'Sonstiges', icon: 'bookmark-outline' },
 ];
 
 export type Appointment = {

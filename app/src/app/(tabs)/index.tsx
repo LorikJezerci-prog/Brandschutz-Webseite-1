@@ -9,7 +9,7 @@ import { Inspection } from '@/store/types';
 import { formatDate, progress } from '@/utils/format';
 
 export default function Begehungen() {
-  const { inspections, customers, ready } = useStore();
+  const { inspections, customers, ready, loadDemo } = useStore();
   const open = inspections.filter((i) => !i.closedAt);
   const closed = inspections.filter((i) => i.closedAt);
   const customerName = (id: string) => customers.find((c) => c.id === id)?.name ?? 'Unbekannter Kunde';
@@ -45,12 +45,23 @@ export default function Begehungen() {
 
   return (
     <Screen header={<TabHeader title="Begehungen" subtitle="Vor Ort prüfen, Mängel festhalten, Bericht als PDF senden." />}>
-      <Button title="Neue Begehung starten" icon="＋" onPress={() => router.push('/begehung/neu')} />
+      <Button title="Neue Begehung starten" icon="add" onPress={() => router.push('/begehung/neu')} />
 
       {ready && inspections.length === 0 ? (
         <Empty
           title="Noch keine Begehung"
           text="Leg zuerst einen Kunden an oder starte direkt. Alles bleibt auf diesem Gerät gespeichert, auch ohne Netz."
+          action={
+            <Button
+              title="Erst mal mit Musterbetrieb üben"
+              icon="business-outline"
+              kind="secondary"
+              onPress={() => {
+                loadDemo();
+                router.push('/begehung/demo-begehung');
+              }}
+            />
+          }
         />
       ) : null}
 
