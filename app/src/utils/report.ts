@@ -1,24 +1,13 @@
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
-import { Platform } from 'react-native';
-
 import { checklist } from '@/data/checklist';
 import { isQualified, profile } from '@/data/profile';
-import { Customer, Inspection, Priority, priorityLabel } from '@/store/types';
+import { Company, Customer, Inspection, Priority, priorityLabel } from '@/store/types';
+import { contactLine, esc, logoSvg, printHtml } from './print';
 import { formatDate, itemsOf, progress } from './format';
 import { photoAsDataUri } from './photos';
 
-const FLAME =
-  'M50 19.5C54.5 29 68.5 39.5 68.5 57C68.5 70.5 60 79.2 50 79.2C40 79.2 31.5 70.5 31.5 57C31.5 48 35.5 42 40.5 36.8C41.3 42 43 45.6 45.8 47.6C44.8 38 46.3 28 50 19.5Z';
-const ARROW = 'M50 47L59.8 57.8H54.4V71.2H45.6V57.8H40.2Z';
-const logo = `<svg width="44" height="44" viewBox="0 0 100 100"><rect width="100" height="100" rx="21" fill="#0A6B44"/><path fill="#fff" d="${FLAME}"/><path fill="#0A6B44" d="${ARROW}"/></svg>`;
-
-const esc = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
 const prioOrder: Priority[] = ['sofort', 'kurzfristig', 'mittelfristig'];
 
-export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
+export async function buildReportHtml(i: Inspection, c: Customer | undefined, co: Company) {
   const items = itemsOf(i);
   const p = progress(i);
   const defects = items
@@ -84,7 +73,7 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
   .note { color:#5B6B63; font-size:9pt; margin-top:24px; border-top:1px solid #DDE5E0; padding-top:8px; }
   .sign { display:flex; gap:40px; margin-top:40px; } .sign div { flex:1; border-top:1px solid #13201A; padding-top:4px; font-size:9pt; color:#5B6B63; }
   </style></head><body>
-  <header>${logo}<div><div class="t">${esc(profile.company)}</div><div class="s">${esc(profile.owner)} · ${esc(profile.address)} · ${esc(profile.phone)}${profile.email ? ' · ' + esc(profile.email) : ''}</div></div></header>
+  <header>${logoSvg()}<div><div class="t">${esc(co.name)}</div><div class="s">${contactLine(co)}</div></div></header>
   <h1>Bericht zur Brandschutzbegehung</h1>
   <div class="grid">
     <div>Kunde</div><div>${esc(c?.name ?? '–')}</div>
@@ -92,7 +81,7 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
     <div>Anschrift</div><div>${esc(c?.address || '–')}</div>
     <div>Datum</div><div>${formatDate(i.date)}</div>
     <div>Teilnehmer</div><div>${esc(i.participants || '–')}</div>
-    <div>Durchgeführt von</div><div>${esc(profile.owner)}${isQualified(new Date(i.date + 'T12:00:00')) ? ', ' + esc(profile.role) : ''}</div>
+    <div>Durchgeführt von</div><div>${esc(co.owner)}${isQualified(new Date(i.date + 'T12:00:00')) ? ', ' + esc(profile.role) : ''}</div>
   </div>
   <div class="kpi">
     <div><b>${p.done}/${p.total}</b>Punkte geprüft</div>
@@ -106,46 +95,11 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
   <h2>Übersicht aller Prüfpunkte</h2>
   <table>${overview}</table>
   <div class="note">Dieser Bericht dokumentiert den Zustand zum Zeitpunkt der Begehung. Er ist eine Empfehlung an die Unternehmensleitung; die Verantwortung für den Brandschutz und die Umsetzung der Maßnahmen bleibt beim Unternehmer. Er ersetzt keine Prüfungen durch Sachverständige oder Sachkundige.</div>
-  <div class="sign"><div>Ort, Datum, ${esc(profile.owner)}</div><div>Kenntnisnahme Unternehmen</div></div>
+  <div class="sign"><div>Ort, Datum, ${esc(co.owner)}</div><div>Kenntnisnahme Unternehmen</div></div>
   </body></html>`;
 }
 
-export async function shareReport(i: Inspection, c: Customer | undefined) {
-  const html = await buildReportHtml(i, c);
-  if (Platform.OS === 'web') {
-    printInBrowser(html, `Maengelbericht ${c?.name ?? ''} ${i.date}`.trim());
-    return;
-  }
-  const { uri } = await Print.printToFileAsync({ html });
-  await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'Mängelbericht teilen' });
-}
-
-/**
- * Web/iPhone-Home-Bildschirm: Bericht in einem unsichtbaren Rahmen drucken.
- * Im Druckdialog von iOS lässt er sich über „Teilen“ als PDF sichern oder verschicken.
- */
-function printInBrowser(html: string, title: string) {
-  const old = document.getElementById('bericht-druck');
-  if (old) old.remove();
-  const frame = document.createElement('iframe');
-  frame.id = 'bericht-druck';
-  frame.setAttribute('aria-hidden', 'true');
-  frame.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';
-  document.body.appendChild(frame);
-  const doc = frame.contentWindow!.document;
-  doc.open();
-  doc.write(html.replace('<head>', `<head><title>${title.replace(/[<>&"]/g, '')}</title>`));
-  doc.close();
-  const go = () => {
-    const prevTitle = document.title;
-    document.title = title;
-    frame.contentWindow!.focus();
-    frame.contentWindow!.print();
-    setTimeout(() => (document.title = prevTitle), 1000);
-  };
-  // Bilder (Logo, Fotos) erst laden lassen
-  const imgs = Array.from(doc.images);
-  Promise.all(imgs.map((im) => (im.complete ? null : new Promise((r) => { im.onload = im.onerror = r; })))).then(() =>
-    setTimeout(go, 150),
-  );
+export async function shareReport(i: Inspection, c: Customer | undefined, co: Company) {
+  const html = await buildReportHtml(i, c, co);
+  await printHtml(html, `Maengelbericht ${c?.name ?? ''} ${i.date}`.trim());
 }

@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { TabHeader } from '@/components/tab-header';
+import { TodayCard } from '@/components/today-card';
 import { Button, Card, Empty, Pill, Progress, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { useStore } from '@/store';
@@ -45,6 +46,7 @@ export default function Begehungen() {
 
   return (
     <Screen header={<TabHeader title="Begehungen" subtitle="Vor Ort prüfen, Mängel festhalten, Bericht als PDF senden." />}>
+      <TodayCard />
       <Button title="Neue Begehung starten" icon="add" onPress={() => router.push('/begehung/neu')} />
 
       {ready && inspections.length === 0 ? (

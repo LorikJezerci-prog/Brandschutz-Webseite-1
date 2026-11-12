@@ -1,14 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
+import { defaultCatalog } from '@/data/catalog';
 import { buildDemo, isDemo } from '@/data/demo';
 import { deleteFile, requestPersistentStorage } from '@/utils/files';
 import { deletePhoto } from '@/utils/photos';
 import { cancelReminder, scheduleReminder } from '@/utils/reminders';
 import {
   Appointment,
+  CatalogItem,
+  Company,
   Customer,
   CustomerDoc,
+  defaultCompany,
   emptyFinding,
   FinanceDoc,
   emptyTax,
@@ -30,6 +34,8 @@ export type Data = {
   tax: TaxProfile;
   docs: CustomerDoc[];
   finance: FinanceDoc[];
+  company: Company;
+  catalog: CatalogItem[];
   /** Zeitpunkt der letzten Datensicherung (ISO) */
   lastBackupAt?: string;
 };
@@ -43,6 +49,8 @@ export const initial: Data = {
   tax: emptyTax,
   docs: [],
   finance: [],
+  company: defaultCompany,
+  catalog: defaultCatalog,
 };
 
 type Store = Data & {
@@ -67,6 +75,10 @@ type Store = Data & {
   saveFinance: (f: Omit<FinanceDoc, 'id'> & { id?: string }) => FinanceDoc;
   removeFinance: (id: string) => void;
   nextNumber: (kind: FinanceDoc['kind'], year: number) => string;
+  updateCompany: (patch: Partial<Company>) => void;
+  saveCatalogItem: (c: Omit<CatalogItem, 'id'> & { id?: string }) => void;
+  removeCatalogItem: (id: string) => void;
+  resetCatalog: () => void;
   /** Für die Datensicherung */
   snapshot: () => Data;
   replaceAll: (d: Data) => void;
@@ -92,7 +104,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     AsyncStorage.getItem(KEY)
       .then((raw) => {
         // Ältere Stände ergänzen, damit neue Bereiche nicht fehlen
-        if (raw) setData({ ...initial, ...JSON.parse(raw) });
+        if (raw) {
+          const saved = JSON.parse(raw);
+          setData({ ...initial, ...saved, company: { ...defaultCompany, ...saved.company } });
+        }
       })
       .catch(() => {})
       .finally(() => {
@@ -236,8 +251,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         .reduce((a, b) => Math.max(a, b), 0);
       return prefix + String(max + 1).padStart(3, '0');
     },
+    updateCompany: (patch) => setData((d) => ({ ...d, company: { ...d.company, ...patch } })),
+    saveCatalogItem: (input) => {
+      const item: CatalogItem = { ...input, id: input.id ?? newId() };
+      setData((d) => ({
+        ...d,
+        catalog: d.catalog.some((x) => x.id === item.id) ? d.catalog.map((x) => (x.id === item.id ? item : x)) : [...d.catalog, item],
+      }));
+    },
+    removeCatalogItem: (id) => setData((d) => ({ ...d, catalog: d.catalog.filter((x) => x.id !== id) })),
+    resetCatalog: () => setData((d) => ({ ...d, catalog: defaultCatalog })),
     snapshot: () => latest.current,
-    replaceAll: (next) => setData({ ...initial, ...next }),
+    replaceAll: (next) => setData({ ...initial, ...next, company: { ...defaultCompany, ...next.company } }),
     markBackup: () => setData((d) => ({ ...d, lastBackupAt: new Date().toISOString() })),
 
     hasDemo: data.customers.some((c) => isDemo(c.id)),

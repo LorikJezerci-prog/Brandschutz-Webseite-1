@@ -4,15 +4,16 @@ import { ActivityIndicator, Alert, Platform, Text, View } from 'react-native';
 
 import { Button, Card, Empty, Field, Pill, Screen, Section } from '@/components/ui';
 import { colors, type } from '@/constants/theme';
+import { suggestFor } from '@/data/catalog';
 import { checklist } from '@/data/checklist';
 import { useStore } from '@/store';
 import { priorityLabel } from '@/store/types';
-import { itemsOf, progress } from '@/utils/format';
+import { formatDate, itemsOf, progress } from '@/utils/format';
 import { shareReport } from '@/utils/report';
 
 export default function Bericht() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { inspections, customers, updateInspection } = useStore();
+  const { inspections, customers, updateInspection, company } = useStore();
   const [busy, setBusy] = useState(false);
   const i = inspections.find((x) => x.id === id);
   if (!i) return <Empty title="Nicht gefunden" text="Diese Begehung existiert nicht." />;
@@ -20,11 +21,15 @@ export default function Bericht() {
   const p = progress(i);
   const defects = itemsOf(i).filter((x) => i.results[x.id]?.status === 'mangel');
   const unchecked = p.total - p.done;
+  const suggested = [...new Set(defects.map((x) => suggestFor[x.id]).filter(Boolean))];
+  if (defects.some((x) => i.results[x.id]?.priority === 'sofort')) suggested.push('nach');
+  const offerFor = (preset: string[], title: string) =>
+    router.push({ pathname: '/beleg/[id]', params: { id: 'neu', kind: 'angebot', customerId: i.customerId, preset: preset.join(','), title } });
 
   const create = async () => {
     setBusy(true);
     try {
-      await shareReport(i, c);
+      await shareReport(i, c, company);
     } catch (e) {
       Alert.alert('Bericht konnte nicht erstellt werden', String(e));
     } finally {
@@ -96,6 +101,40 @@ export default function Bericht() {
           Auf dem iPhone öffnet sich der Druckdialog. Tippe dort oben auf das Teilen-Symbol: Dann kannst du das PDF in Dateien
           sichern, per Mail oder WhatsApp schicken.
         </Text>
+      )}
+      {c && (
+        <Section title="Geld aus dieser Begehung">
+          <Card>
+            <Text style={type.small}>
+              {suggested.length
+                ? `Aus den Mängeln passen ${suggested.length} Leistung(en) aus deiner Preisliste. Das Angebot ist vorausgefüllt, du prüfst nur noch.`
+                : 'Keine Mängel, die zu einer Leistung aus deiner Preisliste passen. Biete trotzdem den Jahresvertrag an.'}
+            </Text>
+            {suggested.length > 0 && (
+              <Button title="Angebot aus den Mängeln" icon="pricetag-outline" onPress={() => offerFor(suggested, `Maßnahmen aus der Begehung vom ${formatDate(i.date)}`)} />
+            )}
+            <Button
+              title="Angebot Jahresvertrag"
+              icon="repeat-outline"
+              kind="secondary"
+              onPress={() => offerFor(['bsb-s'], 'Externer Brandschutzbeauftragter')}
+            />
+            <Button
+              title="Rechnung für diese Begehung"
+              icon="receipt-outline"
+              kind="secondary"
+              onPress={() =>
+                router.push({
+                  pathname: '/beleg/[id]',
+                  params: { id: 'neu', kind: 'rechnung', customerId: i.customerId, preset: 'beg', title: `Brandschutzbegehung ${i.object || ''}`.trim(), serviceDate: formatDate(i.date) },
+                })
+              }
+            />
+            <Text style={type.small}>
+              Tipp: Ein Jahresvertrag bringt planbares Geld und spart dir jedes Mal ein neues Angebot. Größe (klein, mittel, groß) wählst du im Angebot über die Preisliste.
+            </Text>
+          </Card>
+        </Section>
       )}
       <Text style={type.small}>
         Das PDF enthält Kopf mit Logo, Kundendaten, Mängel nach Dringlichkeit mit Fotos, die Übersicht aller Prüfpunkte und ein

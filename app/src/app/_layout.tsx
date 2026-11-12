@@ -50,6 +50,8 @@ export default function RootLayout() {
           <Stack.Screen name="unterlage/[id]" options={{ title: 'Unterlage', presentation: 'modal' }} />
           <Stack.Screen name="beleg/[id]" options={{ title: 'Beleg', presentation: 'modal' }} />
           <Stack.Screen name="finanzen" options={{ title: 'Angebote & Rechnungen' }} />
+          <Stack.Screen name="firma" options={{ title: 'Firmendaten' }} />
+          <Stack.Screen name="preisliste" options={{ title: 'Preisliste' }} />
         </Stack>
         </View>
       </StoreProvider>

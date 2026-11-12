@@ -8,7 +8,6 @@ import { Icon, IconName } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
-import { isQualified, profile } from '@/data/profile';
 import { useStore } from '@/store';
 import { formatDate, formatEuro } from '@/utils/format';
 
@@ -27,9 +26,9 @@ function Tile({ icon, title, text, onPress }: { icon: IconName; title: string; t
 }
 
 export default function Buero() {
-  const { notes, tax, finance, hasDemo, loadDemo, removeDemo } = useStore();
+  const { notes, tax, finance, hasDemo, loadDemo, removeDemo, company, catalog } = useStore();
   const ft = financeTotals(finance);
-  const qualified = isQualified();
+  const companyMissing = [!company.email && 'Mail', !company.iban && 'IBAN'].filter(Boolean).join(', ');
   const taxMissing = !tax.taxNumber;
 
   return (
@@ -50,6 +49,13 @@ export default function Buero() {
           text={ft.openCount ? `${formatEuro(ft.openSum)} offen${ft.overdueCount ? `, ${ft.overdueCount} überfällig` : ''}` : 'Alles bezahlt'}
           onPress={() => router.push('/finanzen')}
         />
+        <Tile
+          icon="business-outline"
+          title="Firmendaten"
+          text={companyMissing ? `Fehlt noch: ${companyMissing}` : 'Vollständig'}
+          onPress={() => router.push('/firma')}
+        />
+        <Tile icon="pricetags-outline" title="Preisliste" text={`${catalog.length} Leistungen, netto`} onPress={() => router.push('/preisliste')} />
       </View>
 
       <BackupCard />
@@ -106,21 +112,6 @@ export default function Buero() {
         </Card>
       </Section>
 
-      <Section title="Dein Profil im Bericht">
-        <Card>
-          <Text style={type.body}>{profile.owner}</Text>
-          <Text style={type.small}>{profile.address}</Text>
-          <Text style={type.small}>{profile.phone}</Text>
-          <Text style={[type.small, { color: profile.email ? colors.muted : colors.warn }]}>
-            {profile.email || 'Geschäftsmail fehlt noch'}
-          </Text>
-          <Text style={[type.small, { color: qualified ? colors.brandDark : colors.warn }]}>
-            {qualified
-              ? profile.role
-              : 'Titel „Brandschutzbeauftragter“ erscheint im Bericht erst ab dem 03.12.2026 (Lehrgangsabschluss).'}
-          </Text>
-        </Card>
-      </Section>
     </Screen>
   );
 }

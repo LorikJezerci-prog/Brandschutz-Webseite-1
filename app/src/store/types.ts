@@ -134,6 +134,14 @@ export type FinanceDoc = {
   /** Rechnung, die aus einem Angebot entstanden ist */
   offerId?: string;
   note: string;
+  /** Positionen (wenn in der App erstellt). amount ist dann der Endbetrag inkl. USt. */
+  items?: LineItem[];
+  /** USt-Satz in Prozent (0 bei Kleinunternehmer) */
+  vatRate?: number;
+  /** Rechnung: Leistungsdatum bzw. -zeitraum (Pflichtangabe) */
+  serviceDate?: string;
+  /** Einleitungstext im PDF */
+  intro?: string;
   fileRef?: string;
   fileName?: string;
   mime?: string;
@@ -150,3 +158,45 @@ export const invoiceStatus: { value: InvoiceStatus; label: string }[] = [
   { value: 'bezahlt', label: 'Bezahlt' },
   { value: 'storniert', label: 'Storniert' },
 ];
+
+/** Firmendaten für Bericht, Angebot und Rechnung (in der App bearbeitbar) */
+export type Company = {
+  name: string;
+  owner: string;
+  street: string;
+  zipCity: string;
+  phone: string;
+  email: string;
+  website: string;
+  iban: string;
+  bic: string;
+  bank: string;
+  /** Netto-Stundensatz in € für Positionen nach Aufwand */
+  hourlyRate: number;
+  /** Zahlungsziel Rechnung in Tagen */
+  paymentDays: number;
+  /** Gültigkeit Angebot in Tagen */
+  offerDays: number;
+};
+
+export const defaultCompany: Company = {
+  name: 'Brandschutz Ried',
+  owner: 'Lorik Jezerci',
+  street: 'Friedrichstraße 42',
+  zipCity: '68623 Lampertheim',
+  phone: '0176 62974724',
+  email: '',
+  website: '',
+  iban: '',
+  bic: '',
+  bank: '',
+  hourlyRate: 80,
+  paymentDays: 14,
+  offerDays: 30,
+};
+
+/** Preisliste: Leistungen mit Netto-Preis */
+export type CatalogItem = { id: string; code: string; title: string; desc: string; unit: string; price: number };
+
+/** Position in Angebot oder Rechnung (Preise netto) */
+export type LineItem = { id: string; title: string; desc: string; qty: number; unit: string; price: number };
