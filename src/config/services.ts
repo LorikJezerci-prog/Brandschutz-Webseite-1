@@ -167,7 +167,7 @@ export const services: Service[] = [
     slug: "heissarbeiten",
     code: "HEI",
     title: "Heißarbeiten sicher organisieren",
-    short: "Erlaubnisschein für Schweißen, Flexen und Löten einführen und das Personal einweisen.",
+    short: "Erlaubnisschein für Schweißen, Flexen und Löten einführen, Personal einweisen, auf Wunsch Brandwache stellen.",
     motif: "heiss",
     group: "betreuung",
     summary:
@@ -177,10 +177,13 @@ export const services: Service[] = [
       "Erlaubnisschein passend zum Betrieb",
       "Regeln für Brandwache und Nachkontrolle",
       "Einweisung von Verantwortlichen und Ausführenden",
+      "Auf Wunsch Brandposten und Brandwache bei feuergefährlichen Arbeiten (planbare Einsätze)",
     ],
     benefit: "Weniger Brandrisiko und klare Nachweise gegenüber dem Versicherer.",
     basis: "DGUV Regel 100-500, Vorgaben der Versicherer (VdS)",
-    boundaries: [],
+    boundaries: [
+      "Brandposten und Brandwache übernehme ich nur bei feuergefährlichen Arbeiten im Betrieb. Brandsicherheitswachen bei Veranstaltungen stellt die Feuerwehr.",
+    ],
   },
   {
     slug: "brandschutzordnung",
