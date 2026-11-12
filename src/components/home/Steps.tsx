@@ -1,8 +1,8 @@
 const steps = [
   ["Anrufen oder schreiben", "Sie schildern kurz Ihren Betrieb und den Anlass. Ich melde mich zeitnah zurück."],
   ["Vor Ort ansehen", "Gemeinsamer Rundgang: Wege, Türen, Feuerlöscher, Aushänge und Abläufe."],
-  ["Klarer Bericht", "Was passt, was fehlt, was zuerst. Mit Fotos und in verständlicher Sprache."],
-  ["Umsetzen", "Ich unterstütze bei der Umsetzung oder betreue Ihren Betrieb dauerhaft."],
+  ["Bericht und Festpreis", "Was passt, was fehlt, was zuerst. Dazu ein schriftliches Angebot mit Festpreis."],
+  ["Umsetzen und dranbleiben", "Ich unterstütze bei der Umsetzung oder betreue Ihren Betrieb dauerhaft zum festen Jahresbetrag."],
 ] as const;
 
 export function Steps() {

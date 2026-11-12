@@ -34,7 +34,7 @@ export const site = {
   /** Öffentliche Adresse, wird über NEXT_PUBLIC_SITE_URL gesetzt */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   description:
-    "Organisatorischer Brandschutz für Unternehmen im Hessischen Ried und an der Bergstraße: Beratung, Brandschutzordnung, Unterweisungen und perspektivisch die Betreuung als externer Brandschutzbeauftragter.",
+    "Organisatorischer Brandschutz für Betriebe in Lampertheim, im Hessischen Ried und an der Bergstraße: Brandschutzhelfer-Ausbildung, Brandschutzordnung, Begehungen mit Mängelbericht und Betreuung als externer Brandschutzbeauftragter.",
   region: {
     label: "Hessisches Ried · Bergstraße",
     areas: ["Lampertheim", "Hessisches Ried", "Kreis Bergstraße"],
@@ -50,6 +50,7 @@ export const site = {
 
   founder: {
     name: "Lorik Jezerci" as Value,
+    /** Ab Zeugnis (03.12.2026): "Brandschutzbeauftragter (DGUV 205-003)" */
     role: "Inhaber",
   },
 
@@ -103,6 +104,7 @@ export const nav = [
   { href: "/#leistungen", label: "Leistungen" },
   { href: "/#branchen", label: "Branchen" },
   { href: "/#schnellcheck", label: "Schnellcheck" },
-  { href: "/#hintergrund", label: "Hintergrund" },
+  { href: "/#hintergrund", label: "Über mich" },
+  { href: "/#fragen", label: "Fragen" },
   { href: "/#kontakt", label: "Kontakt" },
 ] as const;

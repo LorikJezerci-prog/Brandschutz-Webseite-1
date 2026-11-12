@@ -37,7 +37,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
             {partner && (
               <span className="badge badge--partner">
                 <span className="badge__dot" aria-hidden="true" />
-                Über Fachpartner
+                Prüfung durch Fachbetrieb
               </span>
             )}
             <h1 id="detail-title">{s.title}</h1>

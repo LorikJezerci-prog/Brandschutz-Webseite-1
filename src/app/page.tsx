@@ -1,27 +1,28 @@
 import { About } from "@/components/About";
 import { ContactSection } from "@/components/ContactSection";
 import { Branchen } from "@/components/home/Branchen";
+import { Faq } from "@/components/home/Faq";
 import { Hero } from "@/components/home/Hero";
+import { MoreServices } from "@/components/home/MoreServices";
+import { Packages } from "@/components/home/Packages";
 import { QuickCheck } from "@/components/home/QuickCheck";
 import { Scope } from "@/components/home/Scope";
 import { Steps } from "@/components/home/Steps";
-import { ServiceGroups, ServicesIntro } from "@/components/ServiceCards";
+import { StructuredData } from "@/components/StructuredData";
 
 export default function Home() {
   return (
     <>
+      <StructuredData />
       <Hero />
-      <section id="leistungen" className="section" aria-label="Leistungen">
-        <div className="wrap">
-          <ServicesIntro />
-          <ServiceGroups />
-        </div>
-      </section>
+      <Packages />
       <Branchen />
       <QuickCheck />
       <Steps />
-      <Scope />
+      <MoreServices />
+      <Scope tint />
       <About />
+      <Faq />
       <ContactSection />
     </>
   );

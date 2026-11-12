@@ -13,7 +13,7 @@ type State =
 const options = [
   ...services.map((s) => ({
     value: s.slug,
-    label: s.group === "partner" ? `${s.title} (über Fachpartner)` : s.title,
+    label: s.group === "partner" ? `${s.title} (über Fachbetrieb)` : s.title,
   })),
   { value: OTHER_SERVICE, label: "Sonstiges oder noch offen" },
 ];

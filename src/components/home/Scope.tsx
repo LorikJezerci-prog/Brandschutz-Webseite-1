@@ -2,14 +2,15 @@ import { groups, servicesIn } from "@/config/services";
 
 const notOffered = [
   "Brandschutzkonzepte und Nachweise für den Bauantrag",
-  "Planung, Errichtung und Prüfung von Brandmeldeanlagen",
-  "Wartung von Feuerlöschern, Türen und Anlagen in Eigenregie",
+  "Planung, Errichtung und Prüfung von Brandmeldeanlagen und anderen Anlagen",
+  "Prüfung und Wartung von Feuerlöschern, Brandschutztüren und Feststellanlagen",
+  "Explosionsschutzdokument und Ex-Prüfungen (ich unterstütze nur beim Brandschutzteil)",
   "Übernahme der Verantwortung des Unternehmers",
 ];
 
-export function Scope() {
+export function Scope({ tint = false }: { tint?: boolean }) {
   return (
-    <section id="abgrenzung" className="section" aria-labelledby="scope-title">
+    <section id="abgrenzung" className={`section${tint ? " section--tint" : ""}`} aria-labelledby="scope-title">
       <div className="wrap">
         <div className="section-head">
           <p className="kicker">Klare Grenzen</p>
