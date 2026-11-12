@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { StoredImage } from '@/components/stored-image';
 import { Button, Card, Empty, Screen, Segmented } from '@/components/ui';
 import { colors, radius, space, type } from '@/constants/theme';
 import { categoryById, checklist } from '@/data/checklist';
@@ -66,10 +66,20 @@ export default function Kategorie() {
               <View style={{ gap: space.s, marginTop: space.xs }}>
                 <Text style={type.label}>DRINGLICHKEIT</Text>
                 <Segmented value={f.priority} options={prioOptions} onChange={(priority) => updateFinding(i.id, item.id, { priority })} />
+                <Text style={type.label}>BEFUND</Text>
                 <TextInput
                   value={f.note}
                   onChangeText={(note) => updateFinding(i.id, item.id, { note })}
-                  placeholder="Was ist los, wo genau, was ist zu tun?"
+                  placeholder="Was ist los und wo genau? z. B. T30-Tür Lackierraum mit Holzkeil offen"
+                  placeholderTextColor="#98A69F"
+                  multiline
+                  style={styles.note}
+                />
+                <Text style={type.label}>MASSNAHME FÜR DEN KUNDEN</Text>
+                <TextInput
+                  value={f.measure ?? ''}
+                  onChangeText={(measure) => updateFinding(i.id, item.id, { measure })}
+                  placeholder="Was soll der Kunde tun? z. B. Keil entfernen, Tür geschlossen halten"
                   placeholderTextColor="#98A69F"
                   multiline
                   style={styles.note}
@@ -77,7 +87,7 @@ export default function Kategorie() {
                 <View style={styles.photos}>
                   {f.photos.map((uri) => (
                     <View key={uri}>
-                      <Image source={{ uri }} style={styles.photo} contentFit="cover" />
+                      <StoredImage uri={uri} style={styles.photo} />
                       <Pressable
                         accessibilityLabel="Foto entfernen"
                         hitSlop={8}

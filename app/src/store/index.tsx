@@ -2,12 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
 import { buildDemo, isDemo } from '@/data/demo';
+import { deleteFile, requestPersistentStorage } from '@/utils/files';
 import { deletePhoto } from '@/utils/photos';
 import { cancelReminder, scheduleReminder } from '@/utils/reminders';
 import {
   Appointment,
   Customer,
+  CustomerDoc,
   emptyFinding,
+  FinanceDoc,
   emptyTax,
   Finding,
   Inspection,
@@ -18,16 +21,29 @@ import {
 
 const KEY = 'brandschutz-ried/v1';
 
-type Data = {
+export type Data = {
   customers: Customer[];
   inspections: Inspection[];
   appointments: Appointment[];
   notes: Note[];
   tips: Tip[];
   tax: TaxProfile;
+  docs: CustomerDoc[];
+  finance: FinanceDoc[];
+  /** Zeitpunkt der letzten Datensicherung (ISO) */
+  lastBackupAt?: string;
 };
 
-const initial: Data = { customers: [], inspections: [], appointments: [], notes: [], tips: [], tax: emptyTax };
+export const initial: Data = {
+  customers: [],
+  inspections: [],
+  appointments: [],
+  notes: [],
+  tips: [],
+  tax: emptyTax,
+  docs: [],
+  finance: [],
+};
 
 type Store = Data & {
   ready: boolean;
@@ -46,6 +62,15 @@ type Store = Data & {
   addTip: (t: Omit<Tip, 'id'>) => void;
   removeTip: (id: string) => void;
   updateTax: (patch: Partial<TaxProfile>) => void;
+  saveDoc: (d: Omit<CustomerDoc, 'id'> & { id?: string }) => CustomerDoc;
+  removeDoc: (id: string) => void;
+  saveFinance: (f: Omit<FinanceDoc, 'id'> & { id?: string }) => FinanceDoc;
+  removeFinance: (id: string) => void;
+  nextNumber: (kind: FinanceDoc['kind'], year: number) => string;
+  /** Für die Datensicherung */
+  snapshot: () => Data;
+  replaceAll: (d: Data) => void;
+  markBackup: () => void;
   hasDemo: boolean;
   loadDemo: () => void;
   removeDemo: () => void;
@@ -63,6 +88,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   latest.current = data;
 
   useEffect(() => {
+    requestPersistentStorage();
     AsyncStorage.getItem(KEY)
       .then((raw) => {
         // Ältere Stände ergänzen, damit neue Bereiche nicht fehlen
@@ -104,8 +130,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeCustomer: (id) =>
       setData((d) => {
         d.inspections.filter((i) => i.customerId === id).forEach(removePhotosOf);
+        [...d.docs, ...d.finance].filter((x) => x.customerId === id && x.fileRef).forEach((x) => deleteFile(x.fileRef!));
         return {
           ...d,
+          docs: d.docs.filter((x) => x.customerId !== id),
+          finance: d.finance.filter((x) => x.customerId !== id),
           customers: d.customers.filter((c) => c.id !== id),
           inspections: d.inspections.filter((i) => i.customerId !== id),
           appointments: d.appointments.map((a) => (a.customerId === id ? { ...a, customerId: undefined } : a)),
@@ -168,6 +197,49 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     updateTax: (patch) => setData((d) => ({ ...d, tax: { ...d.tax, ...patch } })),
 
+    saveDoc: (input) => {
+      const doc: CustomerDoc = { ...input, id: input.id ?? newId() };
+      setData((d) => {
+        const old = d.docs.find((x) => x.id === doc.id);
+        if (old?.fileRef && old.fileRef !== doc.fileRef) deleteFile(old.fileRef);
+        return { ...d, docs: [doc, ...d.docs.filter((x) => x.id !== doc.id)] };
+      });
+      return doc;
+    },
+    removeDoc: (id) =>
+      setData((d) => {
+        const old = d.docs.find((x) => x.id === id);
+        if (old?.fileRef) deleteFile(old.fileRef);
+        return { ...d, docs: d.docs.filter((x) => x.id !== id) };
+      }),
+    saveFinance: (input) => {
+      const f: FinanceDoc = { ...input, id: input.id ?? newId() };
+      setData((d) => {
+        const old = d.finance.find((x) => x.id === f.id);
+        if (old?.fileRef && old.fileRef !== f.fileRef) deleteFile(old.fileRef);
+        return { ...d, finance: [f, ...d.finance.filter((x) => x.id !== f.id)] };
+      });
+      return f;
+    },
+    removeFinance: (id) =>
+      setData((d) => {
+        const old = d.finance.find((x) => x.id === id);
+        if (old?.fileRef) deleteFile(old.fileRef);
+        return { ...d, finance: d.finance.filter((x) => x.id !== id) };
+      }),
+    nextNumber: (kind, year) => {
+      const prefix = kind === 'angebot' ? `A-${year}-` : `${year}-`;
+      const max = latest.current.finance
+        .filter((x) => x.kind === kind && x.number.startsWith(prefix))
+        .map((x) => parseInt(x.number.slice(prefix.length), 10))
+        .filter((n) => !isNaN(n))
+        .reduce((a, b) => Math.max(a, b), 0);
+      return prefix + String(max + 1).padStart(3, '0');
+    },
+    snapshot: () => latest.current,
+    replaceAll: (next) => setData({ ...initial, ...next }),
+    markBackup: () => setData((d) => ({ ...d, lastBackupAt: new Date().toISOString() })),
+
     hasDemo: data.customers.some((c) => isDemo(c.id)),
     loadDemo: () => {
       const demo = buildDemo();
@@ -202,6 +274,8 @@ function withoutDemo(d: Data): Data {
       .filter((a) => !isDemo(a.id))
       .map((a) => (isDemo(a.customerId) ? { ...a, customerId: undefined } : a)),
     notes: d.notes.filter((n) => !isDemo(n.id)),
+    docs: d.docs.filter((x) => !isDemo(x.customerId)),
+    finance: d.finance.filter((x) => !isDemo(x.customerId)),
   };
 }
 

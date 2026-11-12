@@ -72,6 +72,14 @@ export default function Bericht() {
                 {cat?.title} · {f.photos.length} Foto(s)
               </Text>
               {f.note ? <Text style={type.body}>{f.note}</Text> : <Text style={[type.small, { color: colors.warn }]}>Noch keine Beschreibung</Text>}
+              {f.measure ? (
+                <Text style={type.body}>
+                  <Text style={{ fontWeight: '700', color: colors.brand }}>Maßnahme: </Text>
+                  {f.measure}
+                </Text>
+              ) : (
+                <Text style={[type.small, { color: colors.warn }]}>Noch keine Maßnahme für den Kunden</Text>
+              )}
             </Card>
           );
         })}

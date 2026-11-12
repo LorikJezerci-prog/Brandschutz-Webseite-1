@@ -47,6 +47,9 @@ export default function RootLayout() {
           <Stack.Screen name="kunde/[id]" options={{ title: 'Kunde' }} />
           <Stack.Screen name="leistung/[slug]" options={{ title: 'Leistung' }} />
           <Stack.Screen name="schnellcheck" options={{ title: 'Schnellcheck' }} />
+          <Stack.Screen name="unterlage/[id]" options={{ title: 'Unterlage', presentation: 'modal' }} />
+          <Stack.Screen name="beleg/[id]" options={{ title: 'Beleg', presentation: 'modal' }} />
+          <Stack.Screen name="finanzen" options={{ title: 'Angebote & Rechnungen' }} />
         </Stack>
         </View>
       </StoreProvider>

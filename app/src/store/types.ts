@@ -25,6 +25,8 @@ export type Finding = {
   status?: Status;
   note: string;
   priority?: Priority;
+  /** Was der Kunde tun soll (erscheint im Bericht) */
+  measure?: string;
   /** Lokale Datei-URIs (nativ) oder Data-URIs (Web) */
   photos: string[];
 };
@@ -84,3 +86,67 @@ export type TaxProfile = {
 };
 
 export const emptyTax: TaxProfile = { office: '', taxNumber: '', vatId: '', smallBusiness: true, advisor: '', notes: '' };
+
+/** Kundenakte: Unterlagen wie Brandschutzordnung, Berichte, Pläne, Nachweise */
+export type DocCategory = 'bso' | 'bericht' | 'plan' | 'nachweis' | 'vertrag' | 'sonstiges';
+
+export const docCategories: { value: DocCategory; label: string; icon: IconName }[] = [
+  { value: 'bso', label: 'Brandschutzordnung', icon: 'book-outline' },
+  { value: 'bericht', label: 'Bericht', icon: 'document-text-outline' },
+  { value: 'plan', label: 'Plan', icon: 'map-outline' },
+  { value: 'nachweis', label: 'Prüfnachweis', icon: 'ribbon-outline' },
+  { value: 'vertrag', label: 'Vertrag', icon: 'create-outline' },
+  { value: 'sonstiges', label: 'Sonstiges', icon: 'folder-outline' },
+];
+
+export type CustomerDoc = {
+  id: string;
+  customerId: string;
+  title: string;
+  category: DocCategory;
+  date: string; // YYYY-MM-DD
+  note: string;
+  /** Verweis auf die gespeicherte Datei (Datei-URI oder "idb:…") */
+  fileRef?: string;
+  fileName?: string;
+  mime?: string;
+  size?: number;
+};
+
+/** Angebote und Rechnungen */
+export type FinanceKind = 'angebot' | 'rechnung';
+export type OfferStatus = 'offen' | 'angenommen' | 'abgelehnt';
+export type InvoiceStatus = 'offen' | 'bezahlt' | 'storniert';
+
+export type FinanceDoc = {
+  id: string;
+  customerId: string;
+  kind: FinanceKind;
+  number: string;
+  title: string;
+  date: string; // YYYY-MM-DD
+  /** Gesamtbetrag in Euro (brutto bzw. Endbetrag) */
+  amount: number;
+  status: OfferStatus | InvoiceStatus;
+  /** Rechnung: fällig am; Angebot: gültig bis */
+  dueDate?: string;
+  paidAt?: string;
+  /** Rechnung, die aus einem Angebot entstanden ist */
+  offerId?: string;
+  note: string;
+  fileRef?: string;
+  fileName?: string;
+  mime?: string;
+};
+
+export const offerStatus: { value: OfferStatus; label: string }[] = [
+  { value: 'offen', label: 'Offen' },
+  { value: 'angenommen', label: 'Angenommen' },
+  { value: 'abgelehnt', label: 'Abgelehnt' },
+];
+
+export const invoiceStatus: { value: InvoiceStatus; label: string }[] = [
+  { value: 'offen', label: 'Offen' },
+  { value: 'bezahlt', label: 'Bezahlt' },
+  { value: 'storniert', label: 'Storniert' },
+];

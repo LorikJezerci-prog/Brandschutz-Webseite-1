@@ -40,6 +40,7 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
         <div class="dh"><span class="no">${n + 1}</span><b>${esc(x.title)}</b><span class="prio ${prio}">${priorityLabel[prio]}</span></div>
         <div class="meta">${esc(cat)}${x.basis ? ' · ' + esc(x.basis) : ''}</div>
         ${f.note ? `<p>${esc(f.note).replace(/\n/g, '<br>')}</p>` : ''}
+        ${f.measure ? `<p class="measure"><b>Maßnahme:</b> ${esc(f.measure).replace(/\n/g, '<br>')}</p>` : ''}
         ${photos.length ? `<div class="photos">${photos.map((src) => `<img src="${src}">`).join('')}</div>` : ''}
       </div>`;
     }),
@@ -76,7 +77,7 @@ export async function buildReportHtml(i: Inspection, c: Customer | undefined) {
   .no { background:#0A6B44; color:#fff; border-radius:50%; width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:9pt; }
   .prio { font-size:9pt; padding:2px 8px; border-radius:99px; font-weight:600; }
   .prio.sofort { background:#FDECEC; color:#C62828; } .prio.kurzfristig { background:#FFF3DF; color:#A15C00; } .prio.mittelfristig { background:#E7F2EC; color:#07502F; }
-  .meta { color:#5B6B63; font-size:9.5pt; margin:3px 0 0 30px; } .defect p { margin:6px 0 0 30px; }
+  .measure b { color:#0A6B44; } .meta { color:#5B6B63; font-size:9.5pt; margin:3px 0 0 30px; } .defect p { margin:6px 0 0 30px; }
   .photos { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 0 30px; } .photos img { width:150px; height:112px; object-fit:cover; border-radius:6px; }
   table { width:100%; border-collapse:collapse; font-size:10pt; } td { padding:4px 6px; border-bottom:1px solid #EEF2F0; }
   tr.cat td { background:#E7F2EC; font-weight:700; color:#07502F; } td.s { width:120px; } td.s.mangel { color:#C62828; font-weight:600; } td.s.ok { color:#0A6B44; } td.s.open { color:#A15C00; }

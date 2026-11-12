@@ -1,14 +1,16 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { BackupCard } from '@/components/backup-card';
 import { ConfirmButton } from '@/components/confirm-button';
+import { financeTotals } from '@/components/finance-row';
 import { Icon, IconName } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { isQualified, profile } from '@/data/profile';
 import { useStore } from '@/store';
-import { formatDate } from '@/utils/format';
+import { formatDate, formatEuro } from '@/utils/format';
 
 function Tile({ icon, title, text, onPress }: { icon: IconName; title: string; text: string; onPress: () => void }) {
   return (
@@ -25,7 +27,8 @@ function Tile({ icon, title, text, onPress }: { icon: IconName; title: string; t
 }
 
 export default function Buero() {
-  const { notes, tax, hasDemo, loadDemo, removeDemo } = useStore();
+  const { notes, tax, finance, hasDemo, loadDemo, removeDemo } = useStore();
+  const ft = financeTotals(finance);
   const qualified = isQualified();
   const taxMissing = !tax.taxNumber;
 
@@ -41,7 +44,15 @@ export default function Buero() {
         <Tile icon="bulb-outline" title="Tipps" text="Praxis, Bericht, Kunden, Gründung" onPress={() => router.push('/tipps')} />
         <Tile icon="flash-outline" title="Schnellcheck" text="Sechs Fragen fürs Erstgespräch" onPress={() => router.push('/schnellcheck')} />
         <Tile icon="library-outline" title="Leistungen" text="Deine 14 Leistungen zum Nachschlagen" onPress={() => router.push('/leistungen')} />
+        <Tile
+          icon="wallet-outline"
+          title="Angebote & Rechnungen"
+          text={ft.openCount ? `${formatEuro(ft.openSum)} offen${ft.overdueCount ? `, ${ft.overdueCount} überfällig` : ''}` : 'Alles bezahlt'}
+          onPress={() => router.push('/finanzen')}
+        />
       </View>
+
+      <BackupCard />
 
       <Section
         title={`Notizen (${notes.length})`}
