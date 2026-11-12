@@ -1,6 +1,6 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Attached, Attachment } from '@/components/attachment';
 import { ConfirmButton } from '@/components/confirm-button';
@@ -10,6 +10,7 @@ import { colors, radius, space, type } from '@/constants/theme';
 import { useStore } from '@/store';
 import { FinanceDoc, FinanceKind, invoiceStatus, LineItem, offerStatus } from '@/store/types';
 import { missingFor, shareBeleg, totals } from '@/utils/beleg-pdf';
+import { followUpMail } from '@/utils/mail';
 import { addDays, formatDate, formatEuro, parseDate, parseEuro, today } from '@/utils/format';
 
 export default function Beleg() {
@@ -265,6 +266,23 @@ export default function Beleg() {
           router.back();
         }}
       />
+      {existing && existing.status === 'offen' && (isInvoice ? !!existing.dueDate && existing.dueDate < today() : true) && (
+        <Card>
+          <Text style={type.small}>
+            {isInvoice
+              ? 'Die Rechnung ist überfällig. Eine freundliche Erinnerung bringt in den meisten Fällen das Geld.'
+              : 'Angebote ohne Nachfassen gehen meist verloren. Kurze Mail schreiben, am besten nach 7 Tagen.'}
+          </Text>
+          <Button
+            title={isInvoice ? 'Zahlungserinnerung per Mail' : 'Nachfassen per Mail'}
+            icon="mail-outline"
+            kind="secondary"
+            disabled={!customer.email}
+            onPress={() => Linking.openURL(followUpMail(existing, customer, company))}
+          />
+          {!customer.email && <Text style={[type.small, { color: colors.warn }]}>Beim Kunden ist keine E-Mail hinterlegt.</Text>}
+        </Card>
+      )}
       {existing && !isInvoice && existing.status !== 'abgelehnt' && (
         <Button
           title="Rechnung aus diesem Angebot"

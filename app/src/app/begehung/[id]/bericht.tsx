@@ -8,7 +8,7 @@ import { suggestFor } from '@/data/catalog';
 import { checklist } from '@/data/checklist';
 import { useStore } from '@/store';
 import { priorityLabel } from '@/store/types';
-import { formatDate, itemsOf, progress } from '@/utils/format';
+import { addDays, formatDate, isoWeek, itemsOf, progress } from '@/utils/format';
 import { shareReport } from '@/utils/report';
 
 export default function Bericht() {
@@ -23,6 +23,9 @@ export default function Bericht() {
   const unchecked = p.total - p.done;
   const suggested = [...new Set(defects.map((x) => suggestFor[x.id]).filter(Boolean))];
   if (defects.some((x) => i.results[x.id]?.priority === 'sofort')) suggested.push('nach');
+  const sofort = defects.filter((x) => i.results[x.id]?.priority === 'sofort');
+  const planVisit = (days: number, title: string, note: string) =>
+    router.push({ pathname: '/termin/[id]', params: { id: 'neu', type: 'begehung', customerId: i.customerId, title, date: addDays(i.date, days), note } });
   const offerFor = (preset: string[], title: string) =>
     router.push({ pathname: '/beleg/[id]', params: { id: 'neu', kind: 'angebot', customerId: i.customerId, preset: preset.join(','), title } });
 
@@ -101,6 +104,28 @@ export default function Bericht() {
           Auf dem iPhone öffnet sich der Druckdialog. Tippe dort oben auf das Teilen-Symbol: Dann kannst du das PDF in Dateien
           sichern, per Mail oder WhatsApp schicken.
         </Text>
+      )}
+      {c && (
+        <Section title="Wiedervorlage">
+          <Card>
+            <Text style={type.small}>Trag den nächsten Termin gleich jetzt ein. Was nicht im Kalender steht, passiert nicht.</Text>
+            {sofort.length > 0 && (
+              <Button
+                title={`Nachbegehung in 2 Wochen (KW ${isoWeek(addDays(i.date, 14))})`}
+                icon="calendar-outline"
+                onPress={() =>
+                  planVisit(14, `Nachbegehung ${c.name}`, `Sofort-Mängel kontrollieren:\n${sofort.map((x) => `• ${x.title}`).join('\n')}`)
+                }
+              />
+            )}
+            <Button
+              title={`Nächste Jahresbegehung (KW ${isoWeek(addDays(i.date, 357))})`}
+              icon="repeat-outline"
+              kind="secondary"
+              onPress={() => planVisit(357, `Jahresbegehung ${c.name}`, `Letzte Begehung ${formatDate(i.date)} mit ${defects.length} Mängeln.`)}
+            />
+          </Card>
+        </Section>
       )}
       {c && (
         <Section title="Geld aus dieser Begehung">

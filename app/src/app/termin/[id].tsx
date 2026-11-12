@@ -7,7 +7,7 @@ import { Button, Card, Field, Section, Screen, Segmented, tap } from '@/componen
 import { colors, radius, space, type } from '@/constants/theme';
 import { useStore } from '@/store';
 import { AppointmentType, appointmentTypes } from '@/store/types';
-import { formatDate, parseDate, today } from '@/utils/format';
+import { formatDate, isoWeek, parseDate, today } from '@/utils/format';
 import { routeTo } from '@/utils/maps';
 import { remindersSupported } from '@/utils/reminders';
 
@@ -25,18 +25,18 @@ const plusDays = (n: number) => {
 };
 
 export default function Termin() {
-  const params = useLocalSearchParams<{ id: string; type?: AppointmentType; customerId?: string; title?: string }>();
+  const params = useLocalSearchParams<{ id: string; type?: AppointmentType; customerId?: string; title?: string; date?: string; note?: string }>();
   const { appointments, customers, saveAppointment, removeAppointment, setAppointmentDone } = useStore();
   const existing = appointments.find((a) => a.id === params.id);
   const isNew = !existing;
 
   const [title, setTitle] = useState(existing?.title ?? params.title ?? '');
   const [kind, setKind] = useState<AppointmentType>(existing?.type ?? params.type ?? 'begehung');
-  const [date, setDate] = useState(existing ? formatDate(existing.date) : plusDays(1));
+  const [date, setDate] = useState(existing ? formatDate(existing.date) : params.date ? formatDate(params.date) : plusDays(1));
   const [time, setTime] = useState(existing?.time ?? '09:00');
   const [customerId, setCustomerId] = useState(existing?.customerId ?? params.customerId ?? '');
   const [location, setLocation] = useState(existing?.location ?? '');
-  const [note, setNote] = useState(existing?.note ?? '');
+  const [note, setNote] = useState(existing?.note ?? params.note ?? '');
   const [remind, setRemind] = useState(String(existing?.remindBefore ?? 1440));
 
   const iso = parseDate(date);
@@ -82,6 +82,11 @@ export default function Termin() {
             <Field label="Uhrzeit" value={time} onChangeText={setTime} keyboardType="numbers-and-punctuation" />
           </View>
         </View>
+        {iso && (
+          <Text style={type.small}>
+            {['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'][new Date(iso + 'T12:00:00').getDay()]}, KW {isoWeek(iso)}
+          </Text>
+        )}
         <View style={styles.chips}>
           {[
             ['Heute', formatDate(today())],

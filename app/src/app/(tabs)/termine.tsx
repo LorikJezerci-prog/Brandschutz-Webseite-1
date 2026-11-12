@@ -7,11 +7,21 @@ import { Button, Card, Empty, Pill, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { useStore } from '@/store';
 import { Appointment, appointmentTypes } from '@/store/types';
-import { formatDate, today } from '@/utils/format';
+import { addDays, formatDate, isoWeek, today, weekStart } from '@/utils/format';
 import { remindersSupported } from '@/utils/reminders';
 
 const weekday = (iso: string) =>
   ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][new Date(iso + 'T12:00:00').getDay()];
+
+/** Termine nach Kalenderwoche gruppieren (Montag als Schlüssel) */
+const weeks = (list: Appointment[]) => {
+  const m = new Map<string, Appointment[]>();
+  list.forEach((a) => {
+    const k = weekStart(a.date);
+    m.set(k, [...(m.get(k) ?? []), a]);
+  });
+  return [...m.entries()];
+};
 
 export default function Termine() {
   const { appointments, customers, ready } = useStore();
@@ -67,7 +77,14 @@ export default function Termine() {
           {overdue.map(row)}
         </Section>
       )}
-      {upcoming.length > 0 && <Section title="Anstehend">{upcoming.map(row)}</Section>}
+      {weeks(upcoming).map(([start, list]) => (
+        <Section
+          key={start}
+          title={`KW ${isoWeek(start)} · ${formatDate(start).slice(0, 6)}–${formatDate(addDays(start, 6)).slice(0, 6)}${start === weekStart(t) ? ' · diese Woche' : start === addDays(weekStart(t), 7) ? ' · nächste Woche' : ''}`}
+          right={<Pill text={String(list.length)} />}>
+          {list.map(row)}
+        </Section>
+      ))}
       {done.length > 0 && <Section title="Erledigt">{done.map(row)}</Section>}
       {ready && appointments.length > 0 && (
         <Text style={[type.small, { textAlign: 'center' }]}>Stand {formatDate(t)}</Text>

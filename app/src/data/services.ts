@@ -122,23 +122,26 @@ export const services: Service[] = [
     boundaries: ["Die Gefährdungsbeurteilung bleibt Aufgabe des Arbeitgebers. Ich erarbeite den Brandschutzteil mit Ihnen."],
   },
   {
-    slug: "brandverhuetungsschau",
-    code: "BVS",
-    title: "Brandverhütungsschau vorbereiten",
+    slug: "gefahrenverhuetungsschau",
+    code: "GVS",
+    title: "Gefahrenverhütungsschau vorbereiten und begleiten",
     short: "Vor dem Behördentermin prüfen, Mängel abstellen und beim Termin dabei sein.",
     motif: "bsb",
     group: "betreuung",
     summary:
-      "Ich prüfe Ihr Objekt vor der behördlichen Brandverhütungsschau und begleite Sie beim Termin.",
-    why: "In Hessen werden viele Objekte regelmäßig von der Brandschutzdienststelle besichtigt. Wer vorher aufräumt, vermeidet Mängellisten, Nachbesichtigungen und Ärger.",
+      "Ich bereite Ihr Objekt auf die behördliche Gefahrenverhütungsschau vor und begleite Sie beim Termin.",
+    why: "In Hessen besichtigt die Brandschutzdienststelle viele Objekte regelmäßig, zum Beispiel Pflegeheime, Versammlungsstätten und größere Betriebe. Wer vorher aufräumt, vermeidet Mängellisten, Nachbesichtigungen und Ärger.",
     tasks: [
       "Vorabbegehung mit Blick auf typische Beanstandungen",
       "Liste der Punkte, die vor dem Termin erledigt sein sollten",
+      "Unterlagen bereitlegen: Brandschutzordnung, Prüfnachweise, Pläne",
       "Begleitung beim Termin mit der Brandschutzdienststelle",
     ],
     benefit: "Ein entspannter Termin und weniger Nacharbeit.",
-    basis: "Hessisches Brand- und Katastrophenschutzgesetz (HBKG)",
-    boundaries: ["Die Brandverhütungsschau selbst führt die zuständige Behörde durch."],
+    basis: "§ 15 Hessisches Brand- und Katastrophenschutzgesetz (HBKG)",
+    boundaries: [
+      "Die Gefahrenverhütungsschau selbst führt die zuständige Behörde durch (in Rheinland-Pfalz ebenfalls Gefahrenverhütungsschau, in Baden-Württemberg Brandverhütungsschau).",
+    ],
   },
   {
     slug: "feuerloescher-bedarf",
