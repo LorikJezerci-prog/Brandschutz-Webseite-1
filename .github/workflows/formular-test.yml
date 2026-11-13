@@ -1,9 +1,11 @@
 # Schickt eine echte Testanfrage über das Kontaktformular der Live-Seite.
-# Nur manuell starten (Actions → Formular testen → Run workflow).
+# Läuft manuell oder wenn diese Datei geändert wird.
 name: Formular testen
 
 on:
   workflow_dispatch:
+  push:
+    paths: ['.github/workflows/formular-test.yml']
 
 jobs:
   test:
