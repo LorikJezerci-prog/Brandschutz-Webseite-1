@@ -3,6 +3,8 @@
 #   FTP_SERVER   z. B. w0123456.kasserver.com
 #   FTP_USERNAME der eigens angelegte FTP-Benutzer (nur Ordner der Domain)
 #   FTP_PASSWORD dessen Passwort
+# Optional Variable FTP_DIR (z. B. brandschutz-ried.de/), falls die Domain in KAS
+# auf einen Unterordner zeigt. Standard: Wurzel des FTP-Benutzers.
 # Ohne Secrets wird nur gebaut und geprüft, nicht hochgeladen.
 name: Website zu all-inkl hochladen
 
@@ -41,7 +43,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./out/
-          server-dir: ./
+          server-dir: ${{ vars.FTP_DIR || './' }}
       - name: Hinweis ohne Zugangsdaten
         if: env.HAS_FTP != 'true'
         run: echo "::notice::Gebaut und geprüft. Zum Hochladen die FTP-Secrets im Repository eintragen."
