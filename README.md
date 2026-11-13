@@ -36,7 +36,7 @@ alle Suchmaschinen.
 
 Statischer Export (`output: "export"`) für all-inkl. `npm run build` erzeugt den Ordner `out/`.
 Das Formular schickt an `public/kontakt.php` (Validierung, Honeypot, Zeitfalle, Herkunftsprüfung,
-Rate-Limit über gehashte IP, Versand per PHP `mail()` vom Absender `website@brandschutz-ried.de`).
+Rate-Limit über gehashte IP, Versand per PHP `mail()` vom Absender `info@brandschutz-ried.de` (vorhandenes Postfach)).
 Sicherheits-Header und HTTPS/www-Weiterleitung: `public/.htaccess`.
 
 Hochladen: GitHub Action `.github/workflows/deploy-allinkl.yml` nach jedem Push (FTPS, Secrets

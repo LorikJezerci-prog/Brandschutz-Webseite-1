@@ -11,6 +11,7 @@ name: Website zu all-inkl hochladen
 on:
   push:
     branches: [claude/project-thread-d9uamu, website-brandschutz-ried]
+    paths-ignore: ['.github/workflows/dns-check.yml', '.github/workflows/formular-test.yml']
   workflow_dispatch:
 
 concurrency:

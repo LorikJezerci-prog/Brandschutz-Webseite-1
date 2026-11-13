@@ -1,0 +1,29 @@
+# Schickt eine echte Testanfrage über das Kontaktformular der Live-Seite.
+# Läuft manuell oder wenn diese Datei geändert wird. Letzter Test: 2026-11-13 #3 (Absender info@)
+name: Formular testen
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/formular-test.yml']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testanfrage senden
+        run: |
+          t=$(( ($(date +%s) - 60) * 1000 ))
+          curl -sS -m 30 -X POST https://www.brandschutz-ried.de/kontakt.php \
+            -H "Accept: application/json" -H "Origin: https://www.brandschutz-ried.de" \
+            --data-urlencode "name=Testanfrage Website" \
+            --data-urlencode "company=Brandschutz Ried (Test)" \
+            --data-urlencode "email=info@brandschutz-ried.de" \
+            --data-urlencode "service=brandschutzhelfer" \
+            --data-urlencode "location=Lampertheim" \
+            --data-urlencode "message=Automatischer Test des Kontaktformulars vom $(date -u '+%d.%m.%Y %H:%M') UTC. Diese Mail kann gelöscht werden." \
+            --data-urlencode "privacy=on" \
+            --data-urlencode "website=" \
+            --data-urlencode "_t=$t" \
+            -w "\nHTTP %{http_code}\n" | tee result.txt
+          grep -q '"ok":true' result.txt

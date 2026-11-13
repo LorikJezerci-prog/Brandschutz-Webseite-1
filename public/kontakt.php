@@ -8,7 +8,7 @@
 declare(strict_types=1);
 
 const TO          = 'info@brandschutz-ried.de';
-const FROM        = 'website@brandschutz-ried.de'; // Absender auf eigener Domain (SPF/DKIM)
+const FROM        = 'info@brandschutz-ried.de';    // Absender = vorhandenes Postfach (all-inkl verwirft unbekannte lokale Absender)
 const SITE_HOSTS  = ['www.brandschutz-ried.de', 'brandschutz-ried.de'];
 const MIN_FILL_MS = 2500;
 const RATE_LIMIT  = 5;      // Anfragen …
