@@ -36,10 +36,12 @@ class ReusingFTP_TLS(ftplib.FTP_TLS):
 def connect() -> ftplib.FTP_TLS:
     for attempt in range(4):
         try:
-            ftp = ReusingFTP_TLS(os.environ["FTP_SERVER"], timeout=60)
-            ftp.login(os.environ["FTP_USERNAME"], os.environ["FTP_PASSWORD"])
+            ftp = ReusingFTP_TLS(os.environ["FTP_SERVER"].strip(), timeout=60)
+            ftp.login(os.environ["FTP_USERNAME"].strip(), os.environ["FTP_PASSWORD"].strip())
             ftp.prot_p()
             return ftp
+        except ftplib.error_perm as exc:
+            sys.exit(f"Login abgelehnt ({exc}). FTP-Secrets prüfen.")
         except (OSError, ftplib.Error) as exc:
             print(f"Verbindung fehlgeschlagen ({exc}), neuer Versuch …")
             time.sleep(5 * (attempt + 1))
