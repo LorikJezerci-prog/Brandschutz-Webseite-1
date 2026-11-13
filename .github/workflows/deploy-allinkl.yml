@@ -48,12 +48,12 @@ jobs:
         run: |
           for h in brandschutz-ried.de www.brandschutz-ried.de; do
             echo "== https://$h/"
-            curl -sS -m 20 -o page.html -w "HTTP %{http_code}, Ziel %{redirect_url}, SSL-Pruefung %{ssl_verify_result}\n" "https://$h/" || echo "::warning::HTTPS fuer $h fehlgeschlagen (Zertifikat?)"
+            curl -sSL -m 20 -o page.html -w "HTTP %{http_code}, Ziel %{redirect_url}, SSL-Pruefung %{ssl_verify_result}\n" "https://$h/" || echo "::warning::HTTPS fuer $h fehlgeschlagen (Zertifikat?)"
             if grep -q "Brandschutz Ried" page.html 2>/dev/null; then echo "Seite gefunden"; else echo "::warning::Auf $h liegt nicht unsere Seite"; head -c 400 page.html 2>/dev/null; echo; fi
             echo | openssl s_client -connect "$h:443" -servername "$h" 2>/dev/null | openssl x509 -noout -subject -ext subjectAltName 2>/dev/null || true
           done
           echo "== Formular (leere Anfrage, schickt keine Mail)"
-          curl -sS -m 20 -X POST -H "Accept: application/json" -H "Origin: https://brandschutz-ried.de" -w "\nHTTP %{http_code}\n" https://brandschutz-ried.de/kontakt.php || true
+          curl -sS -m 20 -X POST -H "Accept: application/json" -H "Origin: https://www.brandschutz-ried.de" -w "\nHTTP %{http_code}\n" https://www.brandschutz-ried.de/kontakt.php || true
       - name: Hinweis ohne Zugangsdaten
         if: env.HAS_FTP != 'true'
         run: echo "::notice::Gebaut und geprüft. Zum Hochladen die FTP-Secrets im Repository eintragen."
