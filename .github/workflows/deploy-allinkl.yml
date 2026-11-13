@@ -51,14 +51,21 @@ jobs:
           fi
       - name: Hochladen per FTPS
         if: env.HAS_FTP == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          local-dir: ./out/
-          server-dir: ${{ vars.FTP_DIR || 'brandschutz-ried.de/' }}
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR: ${{ vars.FTP_DIR || 'brandschutz-ried.de/' }}
+        run: |
+          command -v lftp >/dev/null || sudo apt-get install -y -qq lftp >/dev/null
+          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" "$FTP_SERVER" <<EOF
+          set ftp:ssl-force true
+          set ssl:verify-certificate yes
+          set net:max-retries 3
+          set net:reconnect-interval-base 5
+          mirror --reverse --delete --verbose=1 --parallel=3 --exclude-glob .ftp-deploy-sync-state.json ./out/ $FTP_DIR
+          bye
+          EOF
       - name: Live-Check
         if: env.HAS_FTP == 'true'
         continue-on-error: true
