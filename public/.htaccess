@@ -5,10 +5,10 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  # Immer HTTPS. Der Host bleibt erhalten, bis das Zertifikat sicher auch www abdeckt.
-  # Danach optional: RewriteCond %{HTTP_HOST} !^www\. [NC] -> https://www.brandschutz-ried.de
-  RewriteCond %{HTTPS} off
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Immer HTTPS und immer mit www (Zertifikat deckt *.brandschutz-ried.de ab, geprüft 13.11.2026)
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} !^www\. [NC]
+  RewriteRule ^ https://www.brandschutz-ried.de%{REQUEST_URI} [L,R=301]
   # Alte Adresse der Leistung
   RewriteRule ^leistungen/brandverhuetungsschau/?$ /leistungen/gefahrenverhuetungsschau/ [L,R=301]
 </IfModule>
