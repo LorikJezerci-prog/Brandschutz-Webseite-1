@@ -34,21 +34,6 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm test
       - run: npm run build
-      # Einmalige Aufräumung: der erste Upload landete in der Wurzel statt im Domain-Ordner.
-      - name: Alte Dateien in der FTP-Wurzel entfernen
-        if: env.HAS_FTP == 'true'
-        continue-on-error: true
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        run: |
-          sudo apt-get install -y -qq lftp >/dev/null
-          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" -e "set ftp:ssl-force true; set ssl:verify-certificate yes; cls -1; bye" "$FTP_SERVER" > root.txt
-          cat root.txt
-          if grep -qx ".ftp-deploy-sync-state.json" root.txt; then
-            lftp -u "$FTP_USERNAME,$FTP_PASSWORD" -e "set ftp:ssl-force true; set cmd:fail-exit false; rm -r -f _next _not-found 404 datenschutz impressum kontakt leistungen; rm -f .ftp-deploy-sync-state.json .htaccess 404.html __next.__PAGE__.txt __next._full.txt __next._tree.txt icon.svg index.html index.txt kontakt.php robots.txt sitemap.xml; rm -f brandschutz-ried.de/index.htm; cls -1; bye" "$FTP_SERVER"
-          fi
       - name: Hochladen per FTPS
         if: env.HAS_FTP == 'true'
         env:
@@ -56,16 +41,7 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR: ${{ vars.FTP_DIR || 'brandschutz-ried.de/' }}
-        run: |
-          command -v lftp >/dev/null || sudo apt-get install -y -qq lftp >/dev/null
-          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" "$FTP_SERVER" <<EOF
-          set ftp:ssl-force true
-          set ssl:verify-certificate yes
-          set net:max-retries 3
-          set net:reconnect-interval-base 5
-          mirror --reverse --delete --verbose=1 --parallel=3 --exclude-glob .ftp-deploy-sync-state.json ./out/ $FTP_DIR
-          bye
-          EOF
+        run: python3 scripts/ftp-deploy.py
       - name: Live-Check
         if: env.HAS_FTP == 'true'
         continue-on-error: true
