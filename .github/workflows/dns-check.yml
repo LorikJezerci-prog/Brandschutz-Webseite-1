@@ -37,7 +37,7 @@ jobs:
               s.starttls(); s.ehlo("github-check.invalid"); print("STARTTLS ok")
           except Exception as e:
               print("STARTTLS:", e)
-          print("MAIL FROM:", s.mail("dns-check@example.org"))
+          print("MAIL FROM:", s.mail(""))
           for rcpt in ["info@brandschutz-ried.de", "website@brandschutz-ried.de", "gibtsnicht-xyz@brandschutz-ried.de"]:
               print("RCPT", rcpt, "->", s.rcpt(rcpt))
           s.rset(); s.quit()
