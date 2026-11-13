@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter_Tight } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { PrelaunchBar } from "@/components/PrelaunchBar";
 import { SiteRuntime } from "@/components/SiteRuntime";
 import { ToTop } from "@/components/ToTop";
 import { site } from "@/config/site";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" className={sans.variable} suppressHydrationWarning>
       <body>
+        <PrelaunchBar />
         <Header />
         <main id="inhalt">{children}</main>
         <Footer />

@@ -13,13 +13,11 @@
   },
   "dependencies": {
     "next": "16.4.2",
-    "nodemailer": "7.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@types/node": "22.15.0",
-    "@types/nodemailer": "6.4.17",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "typescript": "5.8.3",

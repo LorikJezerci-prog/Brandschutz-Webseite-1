@@ -32,14 +32,18 @@ Platzhalter werden mit `ph("…")` angelegt, auf der Seite gelb gestrichelt mark
 `npm run check:launch` gemeldet. Solange `site.indexable = false` ist, sperrt `robots.txt`
 alle Suchmaschinen.
 
-## Kontaktformular
+## Hosting und Kontaktformular
 
-`POST /api/contact` mit serverseitiger Validierung, Honeypot, Zeitfalle, Herkunftsprüfung
-und Rate-Limit (5 Anfragen / 15 min je IP). Funktioniert auch ohne JavaScript (Weiterleitung).
-Versand über SMTP des eigenen Mail-Anbieters oder Resend, siehe `.env.example`.
-Ohne Konfiguration antwortet der Server in Produktion ehrlich mit „nicht eingerichtet“.
+Statischer Export (`output: "export"`) für all-inkl. `npm run build` erzeugt den Ordner `out/`.
+Das Formular schickt an `public/kontakt.php` (Validierung, Honeypot, Zeitfalle, Herkunftsprüfung,
+Rate-Limit über gehashte IP, Versand per PHP `mail()` vom Absender `website@brandschutz-ried.de`).
+Sicherheits-Header und HTTPS/www-Weiterleitung: `public/.htaccess`.
 
-Hinweis: Das Rate-Limit liegt im Arbeitsspeicher. Auf Serverless-Hosting gilt es je Instanz.
+Hochladen: GitHub Action `.github/workflows/deploy-allinkl.yml` nach jedem Push (FTPS, Secrets
+`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`).
+
+Vorstart-Modus: Solange `launch.courseCertificate = false` ist, zeigt die Seite den Starttermin,
+die Ausbildung als „Abschluss 12/2026“ und blendet Versicherer und USt-IdNr. aus, wenn sie `null` sind.
 
 ## Erweiterungen
 

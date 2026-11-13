@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Val } from "@/components/Val";
 import { site } from "@/config/site";
 
-export const metadata: Metadata = { title: "Impressum", alternates: { canonical: "/impressum" } };
+export const metadata: Metadata = { title: "Impressum", alternates: { canonical: "/impressum/" } };
 
 export default function ImprintPage() {
   const { legal, contact } = site;
@@ -34,19 +34,27 @@ export default function ImprintPage() {
             E-Mail: <Val v={contact.email} />
           </p>
 
-          <h2>Umsatzsteuer</h2>
-          <p>
-            Umsatzsteuer-Identifikationsnummer bzw. Wirtschafts-Identifikationsnummer: <Val v={legal.vatId} />
-          </p>
+          {legal.vatId && (
+            <>
+              <h2>Umsatzsteuer</h2>
+              <p>
+                Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: <Val v={legal.vatId} />
+              </p>
+            </>
+          )}
 
-          <h2>Berufshaftpflichtversicherung</h2>
-          <p>
-            Angaben nach § 2 Abs. 1 Nr. 11 DL-InfoV:
-            <br />
-            <Val v={legal.insurer} />
-            <br />
-            Räumlicher Geltungsbereich: <Val v={legal.insuranceScope} />
-          </p>
+          {legal.insurer && (
+            <>
+              <h2>Berufshaftpflichtversicherung</h2>
+              <p>
+                Angaben nach § 2 Abs. 1 Nr. 11 DL-InfoV:
+                <br />
+                <Val v={legal.insurer} />
+                <br />
+                Räumlicher Geltungsbereich: {legal.insuranceScope && <Val v={legal.insuranceScope} />}
+              </p>
+            </>
+          )}
 
           <h2>Verbraucherstreitbeilegung</h2>
           <p>

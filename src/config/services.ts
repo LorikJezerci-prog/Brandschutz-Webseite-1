@@ -50,8 +50,8 @@ export const groups: Record<Group, { title: string; lead: string; motif: Motif }
     motif: "unterweisung",
   },
   partner: {
-    title: "Über Fachpartner",
-    lead: "Prüfungen, für die eine eigene Sachkunde nötig ist, organisiere ich mit qualifizierten Fachbetrieben.",
+    title: "Prüfungen über Fachbetriebe",
+    lead: "Prüfungen, für die eine eigene Sachkunde nötig ist, führen qualifizierte Fachbetriebe durch. Ich behalte die Fristen im Blick und koordiniere.",
     motif: "tuer",
   },
 };
@@ -122,23 +122,26 @@ export const services: Service[] = [
     boundaries: ["Die Gefährdungsbeurteilung bleibt Aufgabe des Arbeitgebers. Ich erarbeite den Brandschutzteil mit Ihnen."],
   },
   {
-    slug: "brandverhuetungsschau",
-    code: "BVS",
-    title: "Brandverhütungsschau vorbereiten",
+    slug: "gefahrenverhuetungsschau",
+    code: "GVS",
+    title: "Gefahrenverhütungsschau vorbereiten und begleiten",
     short: "Vor dem Behördentermin prüfen, Mängel abstellen und beim Termin dabei sein.",
     motif: "bsb",
     group: "betreuung",
     summary:
-      "Ich prüfe Ihr Objekt vor der behördlichen Brandverhütungsschau und begleite Sie beim Termin.",
-    why: "In Hessen werden viele Objekte regelmäßig von der Brandschutzdienststelle besichtigt. Wer vorher aufräumt, vermeidet Mängellisten, Nachbesichtigungen und Ärger.",
+      "Ich bereite Ihr Objekt auf die behördliche Gefahrenverhütungsschau vor und begleite Sie beim Termin.",
+    why: "In Hessen besichtigt die Brandschutzdienststelle viele Objekte regelmäßig, zum Beispiel Pflegeheime, Versammlungsstätten und größere Betriebe. Wer vorher aufräumt, vermeidet Mängellisten, Nachbesichtigungen und Ärger.",
     tasks: [
       "Vorabbegehung mit Blick auf typische Beanstandungen",
       "Liste der Punkte, die vor dem Termin erledigt sein sollten",
+      "Unterlagen bereitlegen: Brandschutzordnung, Prüfnachweise, Pläne",
       "Begleitung beim Termin mit der Brandschutzdienststelle",
     ],
     benefit: "Ein entspannter Termin und weniger Nacharbeit.",
-    basis: "Hessisches Brand- und Katastrophenschutzgesetz (HBKG)",
-    boundaries: ["Die Brandverhütungsschau selbst führt die zuständige Behörde durch."],
+    basis: "§ 15 Hessisches Brand- und Katastrophenschutzgesetz (HBKG)",
+    boundaries: [
+      "Die Gefahrenverhütungsschau selbst führt die zuständige Behörde durch (in Rheinland-Pfalz ebenfalls Gefahrenverhütungsschau, in Baden-Württemberg Brandverhütungsschau).",
+    ],
   },
   {
     slug: "feuerloescher-bedarf",
@@ -164,7 +167,7 @@ export const services: Service[] = [
     slug: "heissarbeiten",
     code: "HEI",
     title: "Heißarbeiten sicher organisieren",
-    short: "Erlaubnisschein für Schweißen, Flexen und Löten einführen und das Personal einweisen.",
+    short: "Erlaubnisschein für Schweißen, Flexen und Löten einführen, Personal einweisen, auf Wunsch Brandwache stellen.",
     motif: "heiss",
     group: "betreuung",
     summary:
@@ -174,10 +177,13 @@ export const services: Service[] = [
       "Erlaubnisschein passend zum Betrieb",
       "Regeln für Brandwache und Nachkontrolle",
       "Einweisung von Verantwortlichen und Ausführenden",
+      "Auf Wunsch Brandposten und Brandwache bei feuergefährlichen Arbeiten (planbare Einsätze)",
     ],
     benefit: "Weniger Brandrisiko und klare Nachweise gegenüber dem Versicherer.",
     basis: "DGUV Regel 100-500, Vorgaben der Versicherer (VdS)",
-    boundaries: [],
+    boundaries: [
+      "Brandposten und Brandwache übernehme ich nur bei feuergefährlichen Arbeiten im Betrieb. Brandsicherheitswachen bei Veranstaltungen stellt die Feuerwehr.",
+    ],
   },
   {
     slug: "brandschutzordnung",
@@ -300,22 +306,22 @@ export const services: Service[] = [
   {
     slug: "pruefung-feuerloescher",
     code: "LÖP",
-    title: "Prüfung von Feuerlöschern",
-    short: "Regelmäßige Prüfung durch sachkundige Fachbetriebe, von mir organisiert.",
+    title: "Feuerlöscher-Prüfung organisieren",
+    short: "Prüftermine im Blick, Prüfung durch einen sachkundigen Fachbetrieb.",
     motif: "loescher",
     group: "partner",
     summary: "Feuerlöscher müssen regelmäßig von Sachkundigen geprüft werden. Ich organisiere das mit einem Fachbetrieb.",
     why: "Die Prüfung ist in der Regel alle zwei Jahre fällig und geht im Alltag leicht unter.",
     tasks: ["Prüftermine im Blick behalten", "Fachbetrieb beauftragen und koordinieren", "Ergebnisse in die Dokumentation übernehmen"],
     benefit: "Keine vergessenen Prüftermine.",
-    basis: "ASR A2.2, Sachkunde nach DIN 14406-4",
+    basis: "ASR A2.2 (Prüfung durch Sachkundige nach DIN 14406-4)",
     boundaries: ["Die Prüfung selbst führt ein sachkundiger Fachbetrieb durch, nicht Brandschutz Ried."],
   },
   {
     slug: "brandschutztueren-feststellanlagen",
     code: "TÜR",
-    title: "Brandschutztüren und Feststellanlagen",
-    short: "Jährliche Prüfung durch Sachkundige, von mir koordiniert.",
+    title: "Brandschutztüren: Prüffristen und Fachbetriebe",
+    short: "Ich erfasse die Türen, überwache die Fristen und koordiniere die Prüfung durch Sachkundige.",
     motif: "tuer",
     group: "partner",
     summary:
@@ -331,3 +337,91 @@ export const services: Service[] = [
 export const servicesIn = (g: Group) => services.filter((s) => s.group === g);
 
 export const serviceBySlug = (slug: string) => services.find((s) => s.slug === slug);
+
+/**
+ * Die drei Start-Pakete (Entscheidung 06.11.2026): Schulung, Brandschutzordnung
+ * und Begehung. Sie stehen auf der Startseite vorn; alles andere läuft unter
+ * „Weitere Leistungen“. Die Begehung ist der Einstieg in die dauerhafte
+ * Betreuung als externer Brandschutzbeauftragter.
+ */
+export interface StartPackage {
+  slug: string;
+  label: string;
+  title: string;
+  pitch: string;
+  forWhom: string;
+  includes: string[];
+  result: string;
+  next?: string;
+}
+
+export const startPackages: StartPackage[] = [
+  {
+    slug: "brandschutzhelfer",
+    label: "Pflicht erfüllen",
+    title: "Brandschutzhelfer-Ausbildung bei Ihnen vor Ort",
+    pitch: "Der schnellste Weg zu einer Pflicht, die fast jeder Betrieb hat.",
+    forWhom: "Jeder Arbeitgeber. In der Regel müssen mindestens 5 % der Beschäftigten ausgebildet sein.",
+    includes: [
+      "Theorie zu Brandentstehung, Löschmitteln und Verhalten im Brandfall",
+      "Praktische Löschübung mit Übungsfeuerlöschern auf Ihrem Gelände",
+      "Berechnung, wie viele Helfer Sie mit Schichten und Urlaub wirklich brauchen",
+    ],
+    result: "Teilnahmebescheinigungen und ein Nachweis für Versicherer und Berufsgenossenschaft.",
+  },
+  {
+    slug: "brandschutzordnung",
+    label: "Ordnung schaffen",
+    title: "Brandschutzordnung nach DIN 14096",
+    pitch: "Teil A, B und C, passend zu Ihrem Gebäude statt aus der Schublade.",
+    forWhom: "Betriebe ohne aktuelle Brandschutzordnung, nach Umbau oder vor einer Gefahrenverhütungsschau.",
+    includes: [
+      "Rundgang und Abstimmung von Alarmweg, Sammelstelle und Zuständigkeiten",
+      "Teil A als Aushang, Teil B für alle Beschäftigten, Teil C für Personen mit Sonderaufgaben",
+      "Druckfertige Dateien und Termin zur Überprüfung nach zwei Jahren",
+    ],
+    result: "Eine Brandschutzordnung, die stimmt und im Ernstfall verstanden wird.",
+  },
+  {
+    slug: "brandschutzbegehung",
+    label: "Klarheit gewinnen",
+    title: "Brandschutzbegehung mit Mängelbericht",
+    pitch: "Sie wissen danach, wo Ihr Betrieb steht und was zuerst zu tun ist.",
+    forWhom: "Betriebe vor einem Versicherer- oder Behördentermin, nach Umbauten oder ohne eigenen Brandschutzbeauftragten.",
+    includes: [
+      "Rundgang: Fluchtwege, Brandschutztüren, Feuerlöscher, Lagerung, Technikräume",
+      "Jeder Mangel mit Foto, Bewertung und konkreter Maßnahme",
+      "Bericht mit klarer Reihenfolge: sofort, kurzfristig, bei Gelegenheit",
+    ],
+    result: "Ein Bericht, mit dem Sie gegenüber Versicherer und Behörde sauber dastehen.",
+    next: "Auf Wunsch geht die Begehung in die dauerhafte Betreuung als externer Brandschutzbeauftragter über.",
+  },
+];
+
+/** Häufige Fragen. Werden auf der Startseite gezeigt und als FAQPage ausgezeichnet. */
+export const faqs: { q: string; a: string }[] = [
+  {
+    q: "Müssen wir einen Brandschutzbeauftragten bestellen?",
+    a: "Das ergibt sich meist aus der Baugenehmigung oder dem Brandschutzkonzept (zum Beispiel bei Pflegeheimen und Verkaufsstätten), aus den Bedingungen Ihres Versicherers oder aus der Gefährdungsbeurteilung. Im Erstgespräch sehe ich mir Ihre Unterlagen an und sage Ihnen, was davon auf Sie zutrifft. Das ist eine fachliche Einschätzung, keine Rechtsberatung.",
+  },
+  {
+    q: "Wie viele Brandschutzhelfer brauchen wir?",
+    a: "Nach ASR A2.2 in der Regel mindestens 5 % der Beschäftigten, bei erhöhter Brandgefährdung mehr. In der Praxis zählen Schichten, Urlaub und Krankheit mit: Bei 40 Beschäftigten sind 2 Helfer das Minimum, 3 bis 4 sind realistisch.",
+  },
+  {
+    q: "Was kostet das?",
+    a: "Sie erhalten nach einem kurzen Gespräch ein schriftliches Angebot mit Festpreis. Die Betreuung als externer Brandschutzbeauftragter läuft zu einem festen Jahresbetrag. Offene Stundenabrechnungen gibt es nicht.",
+  },
+  {
+    q: "Ersetzt das unsere Fachkraft für Arbeitssicherheit?",
+    a: "Nein. Brandschutzbeauftragter und Fachkraft für Arbeitssicherheit haben unterschiedliche Aufgaben. Ich stimme mich mit Ihrer Fachkraft ab, damit nichts doppelt gemacht wird und nichts liegen bleibt.",
+  },
+  {
+    q: "Prüfen Sie auch Feuerlöscher, Brandschutztüren und Anlagen?",
+    a: "Nein. Diese Prüfungen führen Fachbetriebe mit der nötigen Sachkunde durch. Ich behalte die Fristen im Blick, koordiniere die Termine und übernehme die Ergebnisse in Ihre Dokumentation.",
+  },
+  {
+    q: "Wo sind Sie tätig?",
+    a: "Vor allem in Lampertheim, Bürstadt, Biblis, Viernheim und im Kreis Bergstraße. Worms und Mannheim auf Anfrage.",
+  },
+];

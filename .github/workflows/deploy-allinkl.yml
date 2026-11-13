@@ -1,0 +1,59 @@
+# Lädt die Website nach jedem Push automatisch zu all-inkl hoch.
+# Braucht drei Repository-Secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER   z. B. w0123456.kasserver.com
+#   FTP_USERNAME der eigens angelegte FTP-Benutzer (nur Ordner der Domain)
+#   FTP_PASSWORD dessen Passwort
+# Zielordner: brandschutz-ried.de/ (so ist die Domain in KAS eingestellt).
+# Abweichend per Repository-Variable FTP_DIR setzbar.
+# Ohne Secrets wird nur gebaut und geprüft, nicht hochgeladen.
+name: Website zu all-inkl hochladen
+
+on:
+  push:
+    branches: [claude/project-thread-d9uamu, website-brandschutz-ried]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-allinkl
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SITE_URL: https://www.brandschutz-ried.de
+      HAS_FTP: ${{ secrets.FTP_SERVER != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:launch
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
+      - name: Hochladen per FTPS
+        if: env.HAS_FTP == 'true'
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR: ${{ vars.FTP_DIR || 'brandschutz-ried.de/' }}
+        run: python3 scripts/ftp-deploy.py
+      - name: Live-Check
+        if: env.HAS_FTP == 'true'
+        continue-on-error: true
+        run: |
+          for h in brandschutz-ried.de www.brandschutz-ried.de; do
+            echo "== https://$h/"
+            curl -sSL -m 20 -o page.html -w "HTTP %{http_code}, Ziel %{redirect_url}, SSL-Pruefung %{ssl_verify_result}\n" "https://$h/" || echo "::warning::HTTPS fuer $h fehlgeschlagen (Zertifikat?)"
+            if grep -q "Brandschutz Ried" page.html 2>/dev/null; then echo "Seite gefunden"; else echo "::warning::Auf $h liegt nicht unsere Seite"; head -c 400 page.html 2>/dev/null; echo; fi
+            echo | openssl s_client -connect "$h:443" -servername "$h" 2>/dev/null | openssl x509 -noout -subject -ext subjectAltName 2>/dev/null || true
+          done
+          echo "== Formular (leere Anfrage, schickt keine Mail)"
+          curl -sS -m 20 -X POST -H "Accept: application/json" -H "Origin: https://www.brandschutz-ried.de" -w "\nHTTP %{http_code}\n" https://www.brandschutz-ried.de/kontakt.php || true
+      - name: Hinweis ohne Zugangsdaten
+        if: env.HAS_FTP != 'true'
+        run: echo "::notice::Gebaut und geprüft. Zum Hochladen die FTP-Secrets im Repository eintragen."

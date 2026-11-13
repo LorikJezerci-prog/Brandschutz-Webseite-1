@@ -1,8 +1,23 @@
 const branchen = [
   {
     title: "Pflegeheime und Senioreneinrichtungen",
-    why: "Viele Bewohner können sich nicht selbst in Sicherheit bringen. Die Räumung braucht mehr Helfer und Übung.",
-    start: "Brandschutzhelfer, Evakuierungshelfer und Räumungsübung",
+    why: "Viele Bewohner können sich nicht selbst in Sicherheit bringen. Die Räumung braucht mehr Helfer, mehr Übung und eine Brandschutzordnung, die zum Haus passt.",
+    start: "Evakuierungshelfer, Brandschutzordnung Teil B und C, Räumungsübung",
+  },
+  {
+    title: "Logistik, Lager und Hallenmieter",
+    why: "Große Brandlasten, Stapler und Akku-Ladezonen. Mieter in Mehrnutzer-Hallen haben oft keinen eigenen Brandschutzbeauftragten.",
+    start: "Brandschutzhelfer-Ausbildung und Begehung der Ladezonen",
+  },
+  {
+    title: "Metall, Möbel und Verpackung",
+    why: "Schweißen, Späne, Holzstaub, Lacke und Kartonagen: typischer Mittelstand mit erhöhter Brandgefährdung und ohne eigenen Brandschutzbeauftragten.",
+    start: "Begehung mit Mängelbericht und Erlaubnisschein für Heißarbeiten",
+  },
+  {
+    title: "Betriebe mit Gefahrstoffen und Akkus",
+    why: "Lösemittel, Gase, Lithium-Akkus und Gefahrstofflager. Hier zählt Erfahrung aus der Werkfeuerwehr, nicht nur aus dem Lehrbuch.",
+    start: "Begehung der Lager und Unterstützung bei der Gefährdungsbeurteilung",
   },
   {
     title: "Autohäuser und Werkstätten",
@@ -10,19 +25,9 @@ const branchen = [
     start: "Begehung und Brandschutzhelfer mit Löschübung",
   },
   {
-    title: "Hotels und Gastronomie",
-    why: "Gäste kennen die Fluchtwege nicht, nachts ist wenig Personal da, in der Küche droht Fettbrand.",
-    start: "Brandschutzordnung und Unterweisung des Personals, auch für den Nachtdienst",
-  },
-  {
-    title: "Logistik und Lager",
-    why: "Große Brandlasten, Fahrzeuge und Ladeinfrastruktur in weiten Hallen.",
-    start: "Begehung und Feuerlöscher-Bedarfsberechnung",
-  },
-  {
-    title: "Produktion, Bäckereien und Handwerk",
-    why: "Holz- und Mehlstaub, Lacke, Öfen und Heißarbeiten erhöhen die Brandgefährdung.",
-    start: "Brandschutzhelfer je Standort und Regeln für Heißarbeiten",
+    title: "Praxen, Kitas und Büros",
+    why: "Die Pflicht zu Brandschutzhelfern und jährlicher Unterweisung gilt für jeden Arbeitgeber, auch mit wenigen Beschäftigten.",
+    start: "Brandschutzhelfer-Ausbildung und Unterweisung im Paket",
   },
 ] as const;
 

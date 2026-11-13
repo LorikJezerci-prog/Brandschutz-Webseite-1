@@ -18,7 +18,7 @@ export function ServiceGroups() {
             <ul className="group__list">
               {servicesIn(g).map((s) => (
                 <li key={s.slug}>
-                  <a href={`/leistungen/${s.slug}`} className="group__link">
+                  <a href={`/leistungen/${s.slug}/`} className="group__link">
                     <span className="group__name">{s.title}</span>
                     <span className="group__short">{s.short}</span>
                     <span className="arrow" aria-hidden="true">

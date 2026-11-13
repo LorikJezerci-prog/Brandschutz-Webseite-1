@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { services } from "@/config/services";
+import { contactMessages } from "@/lib/contact/messages";
 import { OTHER_SERVICE, type FieldErrors } from "@/lib/contact/validate";
 
 type State =
@@ -13,7 +14,7 @@ type State =
 const options = [
   ...services.map((s) => ({
     value: s.slug,
-    label: s.group === "partner" ? `${s.title} (über Fachpartner)` : s.title,
+    label: s.group === "partner" ? `${s.title} (über Fachbetrieb)` : s.title,
   })),
   { value: OTHER_SERVICE, label: "Sonstiges oder noch offen" },
 ];
@@ -36,8 +37,19 @@ export function ContactForm({ initialError, initialFields = [] }: Props) {
 
   useEffect(() => {
     if (started.current) started.current.value = String(Date.now());
-    const wanted = new URLSearchParams(window.location.search).get("leistung");
+    const q = new URLSearchParams(window.location.search);
+    const wanted = q.get("leistung");
     if (wanted && options.some((o) => o.value === wanted)) setService(wanted);
+    // Rückmeldung von kontakt.php ohne JavaScript (Weiterleitung mit ?fehler=…)
+    const code = q.get("fehler");
+    if (code) {
+      const fields = (q.get("felder") ?? "").split(",").filter(Boolean);
+      setState({
+        kind: "error",
+        message: contactMessages[code] ?? contactMessages.failed,
+        errors: Object.fromEntries(fields.map((f) => [f, "Bitte prüfen."])),
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -108,7 +120,7 @@ export function ContactForm({ initialError, initialFields = [] }: Props) {
     ) : null;
 
   return (
-    <form className="form" action="/api/contact" method="post" onSubmit={onSubmit} id="formular" noValidate={false}>
+    <form className="form" action="/kontakt.php" method="post" onSubmit={onSubmit} id="formular" noValidate={false}>
       <div ref={statusRef} tabIndex={-1} aria-live="polite" className="form__status">
         {state.kind === "error" && <p className="form-result form-result--error">{state.message}</p>}
       </div>
@@ -172,7 +184,7 @@ export function ContactForm({ initialError, initialFields = [] }: Props) {
       <div className="field field--check">
         <input {...field("privacy")} type="checkbox" required />
         <label htmlFor="f-privacy">
-          Ich habe die <a href="/datenschutz">Datenschutzhinweise</a> gelesen. Meine Angaben werden ausschließlich zur
+          Ich habe die <a href="/datenschutz/">Datenschutzhinweise</a> gelesen. Meine Angaben werden ausschließlich zur
           Bearbeitung dieser Anfrage verwendet.
         </label>
         {err("privacy")}

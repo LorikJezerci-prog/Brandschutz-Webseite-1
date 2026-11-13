@@ -75,7 +75,7 @@ a {
 .skip-link {
   position: absolute;
   left: 16px;
-  top: -60px;
+  top: -200px;
   z-index: 100;
   padding: 10px 16px;
   background: var(--brand);
@@ -569,4 +569,18 @@ a {
   border-radius: var(--radius-sm);
   background: #fff8dc;
   color: #6b4d00 !important;
+}
+
+/* Vorstart-Hinweis */
+.prelaunch {
+  margin: 0;
+  padding: 9px var(--gutter);
+  background: var(--brand-deep);
+  color: var(--brand-soft);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: center;
+}
+.prelaunch strong {
+  color: var(--white);
 }

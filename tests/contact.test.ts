@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { createRateLimiter } from "@/lib/contact/rate-limit";
-import { sendContact } from "@/lib/contact/send";
 import { validateContact } from "@/lib/contact/validate";
 
 const valid = {
@@ -42,30 +40,5 @@ describe("validateContact", () => {
   it("behält Zeilenumbrüche in der Nachricht", () => {
     const { data } = validateContact({ ...valid, message: "Zeile eins\nZeile zwei ist auch da" });
     expect(data?.message).toContain("\n");
-  });
-});
-
-describe("createRateLimiter", () => {
-  it("begrenzt je Schlüssel und gibt nach dem Zeitfenster wieder frei", () => {
-    const check = createRateLimiter({ limit: 2, windowMs: 1000 });
-    expect(check("a", 0)).toBe(true);
-    expect(check("a", 10)).toBe(true);
-    expect(check("a", 20)).toBe(false);
-    expect(check("b", 20)).toBe(true);
-    expect(check("a", 1100)).toBe(true);
-  });
-});
-
-describe("sendContact", () => {
-  const data = validateContact(valid).data!;
-
-  it("täuscht in Produktion ohne Konfiguration keinen Erfolg vor", async () => {
-    const r = await sendContact(data, { NODE_ENV: "production" } as NodeJS.ProcessEnv);
-    expect(r).toEqual({ ok: false, reason: "not-configured" });
-  });
-
-  it("protokolliert in der Entwicklung nur", async () => {
-    const r = await sendContact(data, { NODE_ENV: "development" } as NodeJS.ProcessEnv);
-    expect(r).toEqual({ ok: true, via: "log" });
   });
 });

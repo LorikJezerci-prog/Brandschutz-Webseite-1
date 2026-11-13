@@ -10,11 +10,12 @@ export function ContactSection({ initialError, initialFields }: { initialError?:
         <div className="contact__intro">
           <p className="kicker kicker--light">Kontakt</p>
           <h2 id="contact-title" className="section-title">
-            Lassen Sie uns Brandschutz strukturiert angehen.
+            Ein kurzes Gespräch, dann ein Festpreis.
           </h2>
           <p className="section-lead">
-            Sie möchten den Brandschutz in Ihrem Unternehmen weiterentwickeln oder benötigen Unterstützung bei einer
-            konkreten Fragestellung? Lassen Sie uns über Ihr Vorhaben sprechen.
+            Schildern Sie kurz Ihren Betrieb und den Anlass, zum Beispiel einen Termin mit Versicherer oder Behörde,
+            fehlende Brandschutzhelfer oder eine veraltete Brandschutzordnung. Sie erhalten eine Rückmeldung mit Vorschlag
+            und schriftlichem Angebot.
           </p>
           <dl className="contact__details">
             <div>
