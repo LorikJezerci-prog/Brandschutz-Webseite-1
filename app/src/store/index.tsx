@@ -1,12 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
+import { defaultCatalog } from '@/data/catalog';
+import { buildDemo, isDemo } from '@/data/demo';
+import { deleteFile, requestPersistentStorage } from '@/utils/files';
 import { deletePhoto } from '@/utils/photos';
 import { cancelReminder, scheduleReminder } from '@/utils/reminders';
 import {
   Appointment,
+  CatalogItem,
+  Company,
   Customer,
+  CustomerDoc,
+  defaultCompany,
   emptyFinding,
+  FinanceDoc,
   emptyTax,
   Finding,
   Inspection,
@@ -17,16 +25,33 @@ import {
 
 const KEY = 'brandschutz-ried/v1';
 
-type Data = {
+export type Data = {
   customers: Customer[];
   inspections: Inspection[];
   appointments: Appointment[];
   notes: Note[];
   tips: Tip[];
   tax: TaxProfile;
+  docs: CustomerDoc[];
+  finance: FinanceDoc[];
+  company: Company;
+  catalog: CatalogItem[];
+  /** Zeitpunkt der letzten Datensicherung (ISO) */
+  lastBackupAt?: string;
 };
 
-const initial: Data = { customers: [], inspections: [], appointments: [], notes: [], tips: [], tax: emptyTax };
+export const initial: Data = {
+  customers: [],
+  inspections: [],
+  appointments: [],
+  notes: [],
+  tips: [],
+  tax: emptyTax,
+  docs: [],
+  finance: [],
+  company: defaultCompany,
+  catalog: defaultCatalog,
+};
 
 type Store = Data & {
   ready: boolean;
@@ -45,6 +70,22 @@ type Store = Data & {
   addTip: (t: Omit<Tip, 'id'>) => void;
   removeTip: (id: string) => void;
   updateTax: (patch: Partial<TaxProfile>) => void;
+  saveDoc: (d: Omit<CustomerDoc, 'id'> & { id?: string }) => CustomerDoc;
+  removeDoc: (id: string) => void;
+  saveFinance: (f: Omit<FinanceDoc, 'id'> & { id?: string }) => FinanceDoc;
+  removeFinance: (id: string) => void;
+  nextNumber: (kind: FinanceDoc['kind'], year: number) => string;
+  updateCompany: (patch: Partial<Company>) => void;
+  saveCatalogItem: (c: Omit<CatalogItem, 'id'> & { id?: string }) => void;
+  removeCatalogItem: (id: string) => void;
+  resetCatalog: () => void;
+  /** Für die Datensicherung */
+  snapshot: () => Data;
+  replaceAll: (d: Data) => void;
+  markBackup: () => void;
+  hasDemo: boolean;
+  loadDemo: () => void;
+  removeDemo: () => void;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -59,10 +100,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   latest.current = data;
 
   useEffect(() => {
+    requestPersistentStorage();
     AsyncStorage.getItem(KEY)
       .then((raw) => {
         // Ältere Stände ergänzen, damit neue Bereiche nicht fehlen
-        if (raw) setData({ ...initial, ...JSON.parse(raw) });
+        if (raw) {
+          const saved = JSON.parse(raw);
+          setData({ ...initial, ...saved, company: { ...defaultCompany, ...saved.company } });
+        }
       })
       .catch(() => {})
       .finally(() => {
@@ -100,8 +145,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeCustomer: (id) =>
       setData((d) => {
         d.inspections.filter((i) => i.customerId === id).forEach(removePhotosOf);
+        [...d.docs, ...d.finance].filter((x) => x.customerId === id && x.fileRef).forEach((x) => deleteFile(x.fileRef!));
         return {
           ...d,
+          docs: d.docs.filter((x) => x.customerId !== id),
+          finance: d.finance.filter((x) => x.customerId !== id),
           customers: d.customers.filter((c) => c.id !== id),
           inspections: d.inspections.filter((i) => i.customerId !== id),
           appointments: d.appointments.map((a) => (a.customerId === id ? { ...a, customerId: undefined } : a)),
@@ -163,9 +211,97 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     removeTip: (id) => setData((d) => ({ ...d, tips: d.tips.filter((x) => x.id !== id) })),
 
     updateTax: (patch) => setData((d) => ({ ...d, tax: { ...d.tax, ...patch } })),
+
+    saveDoc: (input) => {
+      const doc: CustomerDoc = { ...input, id: input.id ?? newId() };
+      setData((d) => {
+        const old = d.docs.find((x) => x.id === doc.id);
+        if (old?.fileRef && old.fileRef !== doc.fileRef) deleteFile(old.fileRef);
+        return { ...d, docs: [doc, ...d.docs.filter((x) => x.id !== doc.id)] };
+      });
+      return doc;
+    },
+    removeDoc: (id) =>
+      setData((d) => {
+        const old = d.docs.find((x) => x.id === id);
+        if (old?.fileRef) deleteFile(old.fileRef);
+        return { ...d, docs: d.docs.filter((x) => x.id !== id) };
+      }),
+    saveFinance: (input) => {
+      const f: FinanceDoc = { ...input, id: input.id ?? newId() };
+      setData((d) => {
+        const old = d.finance.find((x) => x.id === f.id);
+        if (old?.fileRef && old.fileRef !== f.fileRef) deleteFile(old.fileRef);
+        return { ...d, finance: [f, ...d.finance.filter((x) => x.id !== f.id)] };
+      });
+      return f;
+    },
+    removeFinance: (id) =>
+      setData((d) => {
+        const old = d.finance.find((x) => x.id === id);
+        if (old?.fileRef) deleteFile(old.fileRef);
+        return { ...d, finance: d.finance.filter((x) => x.id !== id) };
+      }),
+    nextNumber: (kind, year) => {
+      const prefix = kind === 'angebot' ? `A-${year}-` : `${year}-`;
+      const max = latest.current.finance
+        .filter((x) => x.kind === kind && x.number.startsWith(prefix))
+        .map((x) => parseInt(x.number.slice(prefix.length), 10))
+        .filter((n) => !isNaN(n))
+        .reduce((a, b) => Math.max(a, b), 0);
+      return prefix + String(max + 1).padStart(3, '0');
+    },
+    updateCompany: (patch) => setData((d) => ({ ...d, company: { ...d.company, ...patch } })),
+    saveCatalogItem: (input) => {
+      const item: CatalogItem = { ...input, id: input.id ?? newId() };
+      setData((d) => ({
+        ...d,
+        catalog: d.catalog.some((x) => x.id === item.id) ? d.catalog.map((x) => (x.id === item.id ? item : x)) : [...d.catalog, item],
+      }));
+    },
+    removeCatalogItem: (id) => setData((d) => ({ ...d, catalog: d.catalog.filter((x) => x.id !== id) })),
+    resetCatalog: () => setData((d) => ({ ...d, catalog: defaultCatalog })),
+    snapshot: () => latest.current,
+    replaceAll: (next) => setData({ ...initial, ...next, company: { ...defaultCompany, ...next.company } }),
+    markBackup: () => setData((d) => ({ ...d, lastBackupAt: new Date().toISOString() })),
+
+    hasDemo: data.customers.some((c) => isDemo(c.id)),
+    loadDemo: () => {
+      const demo = buildDemo();
+      setData((d) => {
+        const clean = withoutDemo(d);
+        return {
+          ...clean,
+          customers: [demo.customer, ...clean.customers],
+          inspections: [demo.inspection, ...clean.inspections],
+          appointments: [...clean.appointments, ...demo.appointments],
+          notes: [...demo.notes, ...clean.notes],
+        };
+      });
+    },
+    removeDemo: () =>
+      setData((d) => {
+        d.inspections.filter((i) => isDemo(i.id) || isDemo(i.customerId)).forEach(removePhotosOf);
+        d.appointments.filter((a) => isDemo(a.id)).forEach((a) => cancelReminder(a.notificationId));
+        return withoutDemo(d);
+      }),
   };
 
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>;
+}
+
+function withoutDemo(d: Data): Data {
+  return {
+    ...d,
+    customers: d.customers.filter((c) => !isDemo(c.id)),
+    inspections: d.inspections.filter((i) => !isDemo(i.id) && !isDemo(i.customerId)),
+    appointments: d.appointments
+      .filter((a) => !isDemo(a.id))
+      .map((a) => (isDemo(a.customerId) ? { ...a, customerId: undefined } : a)),
+    notes: d.notes.filter((n) => !isDemo(n.id)),
+    docs: d.docs.filter((x) => !isDemo(x.customerId)),
+    finance: d.finance.filter((x) => !isDemo(x.customerId)),
+  };
 }
 
 function removePhotosOf(i: Inspection) {

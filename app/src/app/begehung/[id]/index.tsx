@@ -2,6 +2,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ConfirmButton } from '@/components/confirm-button';
+import { Icon } from '@/components/icon';
 import { Button, Card, Empty, Pill, Progress, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { checklist } from '@/data/checklist';
@@ -42,7 +43,9 @@ export default function Begehung() {
           return (
             <Card key={cat.id} onPress={() => router.push(`/begehung/${i.id}/${cat.id}`)}>
               <View style={styles.row}>
-                <Text style={styles.icon}>{cat.icon}</Text>
+                <View style={styles.icon}>
+                  <Icon name={cat.icon} size={22} />
+                </View>
                 <View style={{ flex: 1, gap: 4 }}>
                   <Text style={[type.body, { fontWeight: '600' }]}>{cat.title}</Text>
                   <Progress value={p.total ? p.done / p.total : 0} />
@@ -62,13 +65,13 @@ export default function Begehung() {
       <View style={{ flexDirection: 'row', gap: space.s }}>
         {!!c?.address && (
           <View style={{ flex: 1 }}>
-            <Button title="Route" icon="🚗" kind="secondary" onPress={() => routeTo(c.address)} />
+            <Button title="Route" icon="navigate-outline" kind="secondary" onPress={() => routeTo(c.address)} />
           </View>
         )}
         <View style={{ flex: 1 }}>
           <Button
             title="Nachtermin"
-            icon="📅"
+            icon="calendar-outline"
             kind="secondary"
             onPress={() =>
               router.push({
@@ -79,7 +82,7 @@ export default function Begehung() {
           />
         </View>
       </View>
-      <Button title="Bericht ansehen und senden" icon="📄" onPress={() => router.push(`/begehung/${i.id}/bericht`)} />
+      <Button title="Bericht ansehen und senden" icon="document-text-outline" onPress={() => router.push(`/begehung/${i.id}/bericht`)} />
       {i.closedAt ? (
         <Button title="Wieder öffnen" kind="secondary" onPress={() => updateInspection(i.id, { closedAt: undefined })} />
       ) : (
@@ -103,5 +106,5 @@ export default function Begehung() {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: space.m },
-  icon: { fontSize: 26 },
+  icon: { width: 42, height: 42, borderRadius: 12, backgroundColor: colors.brandSoft, alignItems: 'center', justifyContent: 'center' },
 });

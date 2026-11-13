@@ -10,14 +10,14 @@ import { buildReportHtml } from '@/utils/report';
 
 export default function Vorschau() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { inspections, customers } = useStore();
+  const { inspections, customers, company } = useStore();
   const i = inspections.find((x) => x.id === id);
   const c = customers.find((x) => x.id === i?.customerId);
   const [html, setHtml] = useState<string | null>(null);
 
   useEffect(() => {
-    if (i) buildReportHtml(i, c).then(setHtml);
-  }, [i, c]);
+    if (i) buildReportHtml(i, c, company).then(setHtml);
+  }, [i, c, company]);
 
   if (!i) return <Empty title="Nicht gefunden" text="Diese Begehung existiert nicht." />;
   if (!html)

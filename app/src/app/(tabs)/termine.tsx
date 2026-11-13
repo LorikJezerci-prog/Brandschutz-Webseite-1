@@ -1,16 +1,27 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from '@/components/icon';
 import { TabHeader } from '@/components/tab-header';
 import { Button, Card, Empty, Pill, Screen, Section } from '@/components/ui';
 import { colors, space, type } from '@/constants/theme';
 import { useStore } from '@/store';
 import { Appointment, appointmentTypes } from '@/store/types';
-import { formatDate, today } from '@/utils/format';
+import { addDays, formatDate, isoWeek, today, weekStart } from '@/utils/format';
 import { remindersSupported } from '@/utils/reminders';
 
 const weekday = (iso: string) =>
   ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][new Date(iso + 'T12:00:00').getDay()];
+
+/** Termine nach Kalenderwoche gruppieren (Montag als Schlüssel) */
+const weeks = (list: Appointment[]) => {
+  const m = new Map<string, Appointment[]>();
+  list.forEach((a) => {
+    const k = weekStart(a.date);
+    m.set(k, [...(m.get(k) ?? []), a]);
+  });
+  return [...m.entries()];
+};
 
 export default function Termine() {
   const { appointments, customers, ready } = useStore();
@@ -32,15 +43,21 @@ export default function Termine() {
             <Text style={[styles.dateNum, isToday && { color: colors.white }]}>{a.date.slice(8, 10)}.{a.date.slice(5, 7)}.</Text>
           </View>
           <View style={{ flex: 1, gap: 2 }}>
+            {kind && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Icon name={kind.icon} size={13} color={colors.muted} />
+                <Text style={[type.small, { fontSize: 12 }]}>{kind.label}</Text>
+              </View>
+            )}
             <Text style={[type.body, { fontWeight: '600' }, a.done && styles.doneText]} numberOfLines={2}>
-              {kind?.icon} {a.title}
+              {a.title}
             </Text>
             <Text style={type.small} numberOfLines={1}>
               {a.time} Uhr{customer ? ` · ${customer.name}` : ''}
               {a.location ? ` · ${a.location}` : ''}
             </Text>
           </View>
-          {a.remindBefore > 0 && !a.done && <Text style={{ fontSize: 16 }}>🔔</Text>}
+          {a.remindBefore > 0 && !a.done && <Icon name="notifications-outline" size={18} color={colors.muted} />}
         </View>
       </Card>
     );
@@ -48,7 +65,7 @@ export default function Termine() {
 
   return (
     <Screen header={<TabHeader title="Termine" subtitle="Begehungen, Schulungen und Fristen mit Erinnerung aufs Handy." />}>
-      <Button title="Termin anlegen" icon="＋" onPress={() => router.push('/termin/neu')} />
+      <Button title="Termin anlegen" icon="add" onPress={() => router.push('/termin/neu')} />
       {!remindersSupported && (
         <Text style={type.small}>Erinnerungen kommen nur in der Handy-App, nicht in der Browser-Vorschau.</Text>
       )}
@@ -60,7 +77,14 @@ export default function Termine() {
           {overdue.map(row)}
         </Section>
       )}
-      {upcoming.length > 0 && <Section title="Anstehend">{upcoming.map(row)}</Section>}
+      {weeks(upcoming).map(([start, list]) => (
+        <Section
+          key={start}
+          title={`KW ${isoWeek(start)} · ${formatDate(start).slice(0, 6)}–${formatDate(addDays(start, 6)).slice(0, 6)}${start === weekStart(t) ? ' · diese Woche' : start === addDays(weekStart(t), 7) ? ' · nächste Woche' : ''}`}
+          right={<Pill text={String(list.length)} />}>
+          {list.map(row)}
+        </Section>
+      ))}
       {done.length > 0 && <Section title="Erledigt">{done.map(row)}</Section>}
       {ready && appointments.length > 0 && (
         <Text style={[type.small, { textAlign: 'center' }]}>Stand {formatDate(t)}</Text>
