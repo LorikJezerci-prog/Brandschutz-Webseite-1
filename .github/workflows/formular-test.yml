@@ -1,5 +1,5 @@
 # Schickt eine echte Testanfrage über das Kontaktformular der Live-Seite.
-# Läuft manuell oder wenn diese Datei geändert wird. Letzter Test: 2026-11-13 #2
+# Läuft manuell oder wenn diese Datei geändert wird. Letzter Test: 2026-11-13 #3 (Absender info@)
 name: Formular testen
 
 on:
