@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: s.title,
     description: `${s.summary} ${site.region.label}.`,
-    alternates: { canonical: `/leistungen/${s.slug}` },
+    alternates: { canonical: `/leistungen/${s.slug}/` },
   };
 }
 
@@ -32,7 +32,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         <div className="wrap detail-hero__grid">
           <div>
             <p className="crumbs">
-              <a href="/">Start</a> / <a href="/leistungen">Leistungen</a> / {groups[s.group].title}
+              <a href="/">Start</a> / <a href="/leistungen/">Leistungen</a> / {groups[s.group].title}
             </p>
             {partner && (
               <span className="badge badge--partner">
@@ -87,7 +87,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           <aside className="aside-cta" aria-label="Anfrage">
             <h2>Anfrage stellen</h2>
             <p>Beschreiben Sie kurz Ihren Betrieb und Ihr Anliegen. Sie erhalten eine Rückmeldung mit dem möglichen Vorgehen.</p>
-            <a className="btn btn--primary" href={`/kontakt?leistung=${s.slug}#formular`}>
+            <a className="btn btn--primary" href={`/kontakt/?leistung=${s.slug}#formular`}>
               Unverbindlich anfragen
             </a>
             {others.length > 0 && (
@@ -96,7 +96,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
                 {others.map((o, i) => (
                   <span key={o.slug}>
                     {i > 0 && ", "}
-                    <a href={`/leistungen/${o.slug}`}>{o.title}</a>
+                    <a href={`/leistungen/${o.slug}/`}>{o.title}</a>
                   </span>
                 ))}
               </p>

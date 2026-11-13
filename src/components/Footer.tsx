@@ -20,17 +20,17 @@ export function Footer() {
               </li>
             ))}
             <li>
-              <a href="/leistungen">Alle Leistungen</a>
+              <a href="/leistungen/">Alle Leistungen</a>
             </li>
           </ul>
         </nav>
         <div>
           <ul className="site-footer__links">
             <li>
-              <a href="/impressum">Impressum</a>
+              <a href="/impressum/">Impressum</a>
             </li>
             <li>
-              <a href="/datenschutz">Datenschutz</a>
+              <a href="/datenschutz/">Datenschutz</a>
             </li>
           </ul>
           <p className="site-footer__note">

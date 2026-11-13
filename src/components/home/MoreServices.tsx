@@ -24,7 +24,7 @@ export function MoreServices() {
                 <ul className="more__list">
                   {list.map((s) => (
                     <li key={s.slug}>
-                      <a href={`/leistungen/${s.slug}`}>
+                      <a href={`/leistungen/${s.slug}/`}>
                         <span className="more__name">{s.title}</span>
                         <span className="more__short">{s.short}</span>
                       </a>
@@ -36,7 +36,7 @@ export function MoreServices() {
           })}
         </div>
         <p className="more__all">
-          <a href="/leistungen">Alle Leistungen im Detail →</a>
+          <a href="/leistungen/">Alle Leistungen im Detail →</a>
         </p>
       </div>
     </section>

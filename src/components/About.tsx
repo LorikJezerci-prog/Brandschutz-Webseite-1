@@ -1,8 +1,9 @@
-import { site } from "@/config/site";
+import { prelaunch, site } from "@/config/site";
 import { Val } from "./Val";
 
 const stateLabel = {
   vorhanden: "Nachgewiesen",
+  "in-weiterbildung": "Abschluss 12/2026",
 } as const;
 
 export function About() {
@@ -20,6 +21,9 @@ export function About() {
             Papier.
           </p>
           <p>
+            {prelaunch
+              ? "Die Ausbildung zum Brandschutzbeauftragten nach DGUV Information 205-003 schließe ich im Dezember 2026 ab. "
+              : ""}
             Angeboten wird nur, wofür die Qualifikation nachgewiesen ist. Wo zusätzliche Sachkunde oder Zulassungen
             nötig sind, arbeite ich mit qualifizierten Fachbetrieben zusammen.
           </p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Val } from "@/components/Val";
 import { site } from "@/config/site";
 
-export const metadata: Metadata = { title: "Datenschutz", alternates: { canonical: "/datenschutz" } };
+export const metadata: Metadata = { title: "Datenschutz", alternates: { canonical: "/datenschutz/" } };
 
 export default function PrivacyPage() {
   const { legal, contact } = site;
@@ -39,10 +39,8 @@ export default function PrivacyPage() {
             gelöscht.
           </p>
           <p>
-            Hosting-Anbieter: <Val v={legal.hostingProvider} />. Mit dem Anbieter besteht ein Vertrag zur
-            Auftragsverarbeitung (Art. 28 DSGVO). Sitzt der Anbieter in den USA, erfolgt die Übermittlung auf Grundlage
-            des Angemessenheitsbeschlusses der EU-Kommission zum EU-US Data Privacy Framework (Art. 45 DSGVO), sofern der
-            Anbieter danach zertifiziert ist.
+            Hosting-Anbieter: <Val v={legal.hostingProvider} />. Die Server stehen in Deutschland. Mit dem Anbieter
+            besteht ein Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO).
           </p>
 
           <h2>3. Kontaktformular und E-Mail</h2>
@@ -53,8 +51,8 @@ export default function PrivacyPage() {
             (Anbahnung eines Vertrags) sowie Art. 6 Abs. 1 lit. f DSGVO (Beantwortung von Anfragen).
           </p>
           <p>
-            Zum Schutz vor Missbrauch wird Ihre IP-Adresse kurzzeitig im Arbeitsspeicher des Servers verwendet, um die
-            Anzahl der Anfragen zu begrenzen. Sie wird nicht dauerhaft gespeichert.
+            Zum Schutz vor Missbrauch wird ein nicht umkehrbarer Hashwert Ihrer IP-Adresse für höchstens 15 Minuten auf
+            dem Server gespeichert, um die Anzahl der Anfragen zu begrenzen. Danach wird er gelöscht.
           </p>
           <p>
             Für den Versand nutzen wir: <Val v={legal.mailProvider} />. Ihre Anfrage wird gelöscht, sobald sie

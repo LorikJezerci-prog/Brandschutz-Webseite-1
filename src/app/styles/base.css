@@ -570,3 +570,17 @@ a {
   background: #fff8dc;
   color: #6b4d00 !important;
 }
+
+/* Vorstart-Hinweis */
+.prelaunch {
+  margin: 0;
+  padding: 9px var(--gutter);
+  background: var(--brand-deep);
+  color: var(--brand-soft);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: center;
+}
+.prelaunch strong {
+  color: var(--white);
+}

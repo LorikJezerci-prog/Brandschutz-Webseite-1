@@ -39,10 +39,10 @@ export function Packages() {
               </p>
               {p.next && <p className="package__next">{p.next}</p>}
               <div className="package__actions">
-                <a className="btn btn--primary" href={`/kontakt?leistung=${p.slug}#formular`}>
+                <a className="btn btn--primary" href={`/kontakt/?leistung=${p.slug}#formular`}>
                   Angebot anfordern
                 </a>
-                <a className="package__more" href={`/leistungen/${p.slug}`}>
+                <a className="package__more" href={`/leistungen/${p.slug}/`}>
                   Details
                 </a>
               </div>
@@ -61,7 +61,7 @@ export function Packages() {
               ein Ansprechpartner für Behörde, Feuerwehr und Versicherer. Sie müssen niemanden ausbilden und freistellen.
             </p>
           </div>
-          <a className="btn btn--white" href="/kontakt?leistung=externer-brandschutzbeauftragter#formular">
+          <a className="btn btn--white" href="/kontakt/?leistung=externer-brandschutzbeauftragter#formular">
             Betreuung anfragen
           </a>
         </aside>

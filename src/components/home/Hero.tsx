@@ -1,4 +1,4 @@
-import { isPlaceholder, site } from "@/config/site";
+import { isPlaceholder, launch, prelaunch, site } from "@/config/site";
 import { Illustration } from "../Illustration";
 import { ARROW } from "../Logo";
 
@@ -11,7 +11,9 @@ export function Hero() {
       </svg>
       <div className="wrap hero__grid">
         <div className="hero__text">
-          <p className="hero__kicker">{site.name} · {site.region.label}</p>
+          <p className="hero__kicker">
+            {prelaunch ? `Start am ${launch.startLabel} · ${site.region.label}` : `${site.name} · ${site.region.label}`}
+          </p>
           <h1 id="hero-title" className="hero__title">
             Brandschutz beginnt, bevor etwas passiert.
           </h1>
@@ -31,7 +33,7 @@ export function Hero() {
           </div>
           <ul className="hero__facts" aria-label="Hintergrund">
             <li>Werkfeuerwehr</li>
-            <li>Brandschutzbeauftragter nach DGUV 205-003</li>
+            <li>{prelaunch ? "Ausbildung Brandschutzbeauftragter (DGUV 205-003), Abschluss 12/2026" : "Brandschutzbeauftragter nach DGUV 205-003"}</li>
             <li>Festpreis vorab</li>
           </ul>
         </div>

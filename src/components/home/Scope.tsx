@@ -31,7 +31,7 @@ export function Scope({ tint = false }: { tint?: boolean }) {
             <ul className="scope-col__list">
               {servicesIn("partner").map((s) => (
                 <li key={s.slug}>
-                  <a href={`/leistungen/${s.slug}`}>{s.title}</a>
+                  <a href={`/leistungen/${s.slug}/`}>{s.title}</a>
                 </li>
               ))}
               <li>Zeichnen neuer Flucht- und Rettungspläne</li>

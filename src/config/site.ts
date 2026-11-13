@@ -26,13 +26,22 @@ export const launch = {
   notBefore: "2026-12-03",
   /** Erst auf true setzen, wenn das Zeugnis tatsächlich vorliegt */
   courseCertificate: false,
+  /** Sichtbarer Starttermin im Vorstart-Modus */
+  startLabel: "4. Dezember 2026",
 } as const;
+
+/**
+ * Vorstart-Modus: Die Seite ist online, zeigt aber den Starttermin, die Ausbildung als
+ * „Abschluss Dezember 2026“ und keine Titel. Endet automatisch, sobald
+ * `launch.courseCertificate` auf true steht.
+ */
+export const prelaunch = !launch.courseCertificate;
 
 export const site = {
   name: "Brandschutz Ried",
   shortName: "Brandschutz Ried",
   /** Öffentliche Adresse, wird über NEXT_PUBLIC_SITE_URL gesetzt */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.brandschutz-ried.de",
   description:
     "Organisatorischer Brandschutz für Betriebe in Lampertheim, im Hessischen Ried und an der Bergstraße: Brandschutzhelfer-Ausbildung, Brandschutzordnung, Begehungen mit Mängelbericht und Betreuung als externer Brandschutzbeauftragter.",
   region: {
@@ -45,7 +54,7 @@ export const site = {
    * Suchmaschinen erst zulassen, wenn alle Platzhalter ersetzt sind und das
    * Gewerbe angemeldet ist.
    */
-  indexable: false,
+  indexable: true,
 
 
   founder: {
@@ -55,7 +64,7 @@ export const site = {
   },
 
   contact: {
-    email: ph("Geschäftliche E-Mail-Adresse") as Value,
+    email: "info@brandschutz-ried.de" as Value,
     phone: "0176 62974724" as Value,
     street: "Friedrichstraße 42" as Value,
     zip: "68623" as Value,
@@ -64,12 +73,14 @@ export const site = {
 
   legal: {
     owner: "Lorik Jezerci" as Value,
-    vatId: ph("USt-IdNr. oder Wirtschafts-IdNr.; bei Kleinunternehmer ohne Nummer: Zeile entfernen") as Value,
-    hostingProvider: ph("Hosting-Anbieter mit Anschrift") as Value,
-    mailProvider: ph("E-Mail-Anbieter für das Kontaktformular") as Value,
+    /** USt-IdNr. nur angeben, wenn vorhanden. Bis zur Entscheidung (Kleinunternehmer ja/nein) null = Abschnitt ausgeblendet. Bis 04.12.2026 nachtragen. */
+    vatId: null as Value | null,
+    hostingProvider: "ALL-INKL.COM – Neue Medien Münnich, Hauptstraße 68, 02742 Friedersdorf" as Value,
+    mailProvider: "ALL-INKL.COM – Neue Medien Münnich (eigener Mailserver der Domain, Deutschland)" as Value,
     /** § 2 Abs. 1 Nr. 11 DL-InfoV */
-    insurer: ph("Berufshaftpflicht: Versicherer mit Anschrift") as Value,
-    insuranceScope: ph("Räumlicher Geltungsbereich, z. B. Deutschland") as Value,
+    /** Pflicht, sobald die Versicherung besteht. null = Abschnitt ausgeblendet. Bis 04.12.2026 nachtragen. */
+    insurer: null as Value | null,
+    insuranceScope: null as Value | null,
   },
 
   /**
@@ -80,14 +91,14 @@ export const site = {
     {
       label: "Werkfeuerwehr",
       detail: "Oberfeuerwehrmann in einer Werkfeuerwehr",
-      state: "vorhanden",
+      state: "vorhanden" as "vorhanden" | "in-weiterbildung",
     },
     {
       label: "Brandschutzbeauftragter",
       detail: "Ausbildung nach DGUV Information 205-003, 64 Unterrichtseinheiten mit Projektarbeit, Objektbegehung, Löschübung und Prüfung",
-      state: "vorhanden",
+      state: launch.courseCertificate ? "vorhanden" : "in-weiterbildung",
     },
-  ] as const,
+  ],
 
   /**
    * Spätere Erweiterungen. Sie bleiben ausgeblendet, bis sie wirklich

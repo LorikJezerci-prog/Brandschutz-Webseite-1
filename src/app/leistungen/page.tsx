@@ -5,7 +5,7 @@ import { ServiceGroups, ServicesIntro } from "@/components/ServiceCards";
 export const metadata: Metadata = {
   title: "Leistungen",
   description: "Externer Brandschutzbeauftragter, Brandschutzbegehung, Brandschutzordnung, Brandschutzhelfer-Ausbildung und Räumungsübungen im Hessischen Ried und an der Bergstraße.",
-  alternates: { canonical: "/leistungen" },
+  alternates: { canonical: "/leistungen/" },
 };
 
 export default function ServicesPage() {
