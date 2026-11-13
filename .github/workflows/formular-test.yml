@@ -1,5 +1,5 @@
 # Schickt eine echte Testanfrage über das Kontaktformular der Live-Seite.
-# Läuft manuell oder wenn diese Datei geändert wird.
+# Läuft manuell oder wenn diese Datei geändert wird. Letzter Test: 2026-11-13 #2
 name: Formular testen
 
 on:
