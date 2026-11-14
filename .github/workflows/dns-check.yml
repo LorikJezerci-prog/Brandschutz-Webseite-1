@@ -1,4 +1,4 @@
-# Zeigt die DNS-Einträge der Domain (Mail-Diagnose). Läuft manuell oder bei Änderung dieser Datei.
+# Zeigt die DNS-Einträge der Domain (Mail-Diagnose). Läuft manuell oder bei Änderung dieser Datei. Stand 2026-11-14
 name: DNS prüfen
 
 on:
