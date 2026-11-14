@@ -1,0 +1,44 @@
+# Zeigt die DNS-Einträge der Domain (Mail-Diagnose). Läuft manuell oder bei Änderung dieser Datei. Stand 2026-11-14
+name: DNS prüfen
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/dns-check.yml']
+
+jobs:
+  dns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DNS abfragen
+        run: |
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1 || true
+          D=brandschutz-ried.de
+          echo "== NS (öffentlich)"; dig +short NS $D @1.1.1.1
+          NS=$(dig +short NS $D @1.1.1.1 | head -1)
+          for R in 1.1.1.1 8.8.8.8 ${NS:-}; do
+            [ -z "$R" ] && continue
+            echo; echo "######## Resolver $R"
+            for T in A MX TXT; do echo "-- $T $D"; dig +short $T $D @$R; done
+            echo "-- A www.$D"; dig +short A www.$D @$R
+            echo "-- TXT _dmarc.$D"; dig +short TXT _dmarc.$D @$R
+          done
+          echo; echo "== Ist der MX auf Port 25 erreichbar? (GitHub blockiert 25 oft)"
+          MX=$(dig +short MX $D @1.1.1.1 | sort -n | head -1 | awk '{print $2}')
+          echo "MX: ${MX:-keiner}"
+          [ -n "$MX" ] && timeout 10 bash -c "exec 3<>/dev/tcp/${MX%.}/25 && head -c 200 <&3" || echo "keine Verbindung (normal bei GitHub)"
+      - name: Empfänger beim Mailserver prüfen (sendet keine Mail)
+        run: |
+          python3 - <<'PY'
+          import smtplib
+          s = smtplib.SMTP("w02267bf.kasserver.com", 25, timeout=20)
+          print("EHLO:", s.ehlo("github-check.invalid")[0])
+          try:
+              s.starttls(); s.ehlo("github-check.invalid"); print("STARTTLS ok")
+          except Exception as e:
+              print("STARTTLS:", e)
+          print("MAIL FROM:", s.mail(""))
+          for rcpt in ["info@brandschutz-ried.de", "website@brandschutz-ried.de", "gibtsnicht-xyz@brandschutz-ried.de"]:
+              print("RCPT", rcpt, "->", s.rcpt(rcpt))
+          s.rset(); s.quit()
+          PY

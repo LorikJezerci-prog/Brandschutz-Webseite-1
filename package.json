@@ -1,0 +1,26 @@
+{
+  "name": "brandschutzbuero-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Website-Vorlage für ein Brandschutzbüro in Südhessen (Next.js, ohne Tracking).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "check:launch": "node scripts/check-launch.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.0",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "typescript": "5.8.3",
+    "vitest": "3.2.4"
+  }
+}
