@@ -75,6 +75,8 @@ export const site = {
     owner: "Lorik Jezerci" as Value,
     /** USt-IdNr. nur angeben, wenn vorhanden. Bis zur Entscheidung (Kleinunternehmer ja/nein) null = Abschnitt ausgeblendet. Bis 04.12.2026 nachtragen. */
     vatId: null as Value | null,
+    // Wirtschafts-Identifikationsnummer (§ 5 Abs. 1 Nr. 6 DDG), sobald vom BZSt zugeteilt
+    economicId: null as Value | null,
     hostingProvider: "ALL-INKL.COM – Neue Medien Münnich, Hauptstraße 68, 02742 Friedersdorf" as Value,
     mailProvider: "ALL-INKL.COM – Neue Medien Münnich (eigener Mailserver der Domain, Deutschland)" as Value,
     /** § 2 Abs. 1 Nr. 11 DL-InfoV */
