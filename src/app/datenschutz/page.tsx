@@ -92,7 +92,7 @@ export default function PrivacyPage() {
           </p>
 
           <h2>7. Stand</h2>
-          <p>Oktober 2026</p>
+          <p>November 2026</p>
         </div>
       </div>
     </>

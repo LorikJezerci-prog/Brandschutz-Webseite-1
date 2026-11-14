@@ -43,6 +43,14 @@ export default function ImprintPage() {
             </>
           )}
 
+          {legal.economicId && (
+            <>
+              <h2>Wirtschafts-Identifikationsnummer</h2>
+              <p>
+                <Val v={legal.economicId} />
+              </p>
+            </>
+          )}
           {legal.insurer && (
             <>
               <h2>Berufshaftpflichtversicherung</h2>
